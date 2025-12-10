@@ -6,103 +6,163 @@ An AI-powered application that transforms any topic into beautiful, interactive 
 
 Mind Map Generator is a full-stack web application that uses artificial intelligence to automatically generate structured mind maps from user-provided topics. It features a modern, responsive UI with real-time visualization of complex hierarchical relationships.
 
-## Features
+## ✨ Features
 
-- **AI-Powered Generation**: Automatically generates mind map structures using AI
-- **Interactive Visualization**: Beautiful, zoomable mind maps using Mermaid diagrams
-- **Real-time Rendering**: Instant visual feedback as diagrams are generated
-- **Modern UI**: Sleek dark-themed interface with gradient effects and smooth animations
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Error Handling**: Graceful error messages and validation
+- **🌍 Multi-language Support**
+  - Generate mind maps in English, French, or Arabic
+  - Right-to-Left (RTL) support for Arabic language
+  - Localized UI elements and placeholders
+  - Automatic text direction detection
 
-## Project Structure
+- **🎨 Modern & Responsive UI**
+  - Clean, accessible design with dark/light mode support
+  - Smooth animations and transitions
+  - Fully responsive layout for all devices
+  - Interactive elements with hover/focus states
+  - Beautiful gradient accents and shadows
 
-```
-mindmap-generator/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── App.js           # Main React component
-│   │   ├── index.js         # React entry point
-│   │   ├── index.css        # Global styles
-│   │   └── ...
-│   ├── package.json
-│   └── ...
-├── backend/                  # Backend API server
-│   ├── app.py               # Flask application
-│   ├── requirements.txt      # Python dependencies
-│   └── ...
-└── README.md                # This file
-```
+- **🤖 AI-Powered Generation**
+  - Intelligent mind map generation using advanced AI
+  - Context-aware content creation
+  - Optimized prompts for each supported language
+  - Fast and efficient processing
+
+- **Visualization**
+  - Interactive Mermaid.js diagrams
+  - Zoom and pan functionality
+  - Clean node layouts and connections
+  - Responsive rendering for all screen sizes
+
+- **Performance**
+  - Optimized for fast loading
+  - Efficient state management
+  - Minimal dependencies
+  - Graceful error handling
 
 ## Tech Stack
 
 ### Frontend
-- **React**: UI framework
-- **Mermaid**: Diagram rendering library
-- **CSS3**: Styling with gradients and animations
+- **React 18** - Component-based UI library
+- **Mermaid.js** - Interactive diagram rendering with RTL support
+- **CSS3** - Modern styling with CSS Variables and Flexbox/Grid
+- **Fetch API** - For making HTTP requests to the backend
+- **React Icons** - Beautiful, customizable icons
 
 ### Backend
-- **Python/Flask**: REST API server
-- **AI Integration**: LLM-based mind map generation
+- **Node.js** - JavaScript runtime
+- **Express** - Fast, minimalist web framework
+- **Groq API** - Advanced AI for content generation
+- **CORS** - Secure cross-origin requests
+- **dotenv** - Environment variable management
+
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Git** - Version control
+- **npm** - Package management
+
+## Project Structure
+
+```
+MindMapGenerator/
+├── frontend/              # Frontend React application
+│   ├── public/            # Static assets and HTML template
+│   └── src/               # Source code
+│       ├── assets/        # Images, fonts, etc.
+│       ├── components/    # Reusable UI components
+│       ├── styles/        # Global styles and themes
+│       ├── App.js         # Root component
+│       ├── index.js       # Application entry point
+│       └── index.css      # Global styles
+│
+└── backend/               # Backend server
+    ├── routes/           # API endpoints
+    ├── middlewares/      # Custom middleware
+    ├── config/           # Configuration files
+    ├── server.js         # Server setup and configuration
+    ├── package.json      # Dependencies and scripts
+    └── .env              # Environment variables
+```
+
+## Multi-language Support
+
+The application supports three languages:
+
+1. **English (en)** - Default language with LTR layout
+2. **French (fr)** - French localization with LTR layout
+3. **Arabic (ar)** - Right-to-Left (RTL) language support with proper text rendering
+
+The UI automatically adjusts text direction, font families, and layout based on the selected language.
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v14+)
-- Python (v3.8+)
-- npm or yarn
 
-### Frontend Setup
+- Node.js (v16 or later)
+- npm (v8 or later) or Yarn (v1.22+)
+- Groq API key for AI-powered generation
 
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
+### Installation
 
-2. Install dependencies:
-```bash
-npm install
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/MindMapGenerator.git
+   cd MindMapGenerator
+   ```
 
-3. Start the development server:
-```bash
-npm start
-```
+2. Install dependencies for both frontend and backend:
+   ```bash
+   # Install backend dependencies
+   cd backend
+   npm install
+   
+   # Install frontend dependencies
+   cd ../frontend
+   npm install
+   ```
 
-The application will open at [http://localhost:3000](http://localhost:3000)
+3. Configure environment variables:
+   - Create a `.env` file in the backend directory
+   - Add your Groq API key:
+     ```
+     GROQ_API_KEY=your_groq_api_key_here
+     ```
 
-### Backend Setup
+### Running the Application
 
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
+1. Start the backend server:
+   ```bash
+   cd backend
+   npm start
+   ```
+   > Server will run on `http://localhost:5000`
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+2. In a new terminal, start the frontend development server:
+   ```bash
+   cd frontend
+   npm start
+   ```
+   > Application will open in your default browser at `http://localhost:3000`
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## Usage Guide
 
-4. Run the server:
-```bash
-python app.py
-```
+### Creating a Mind Map
+1. **Enter a topic** in the input field
+2. **Select your language** from the dropdown (English, French, or Arabic)
+3. Click **"Generate Map"** to create your mind map
+4. The AI will process your request and generate an interactive visualization
 
-The API will be available at [http://localhost:5000](http://localhost:5000)
+### Interface Features
+- **Language Selector**: Switch between English, French, and Arabic interfaces
+- **Responsive Layout**: Works on desktop, tablet, and mobile devices
+- **Interactive Nodes**: Hover over nodes to see connections
+- **Dark/Light Mode**: Automatically adapts to system preferences
 
-## Usage
-
-1. Open the application in your browser
-2. Enter any topic in the input field (e.g., "Quantum Physics", "Ancient Rome", "Machine Learning")
-3. Click "Generate Map" or press Enter
-4. Wait for the AI to generate the mind map structure
-5. View the interactive diagram that appears below
+### Tips for Best Results
+- Be specific with your topic for more focused mind maps
+- Use clear, concise language for better AI understanding
+- Try different languages to see how the AI structures information differently
+- For Arabic content, ensure your system has proper RTL text rendering support
 
 ## API Endpoints
 

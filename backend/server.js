@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 const GROQ_API_KEY = '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';
 
 app.post('/generate-mindmap', async (req, res) => {
-    const { subject } = req.body;
+    const { subject, language = 'english' } = req.body;
 
     try {
         // Call Groq API to get JSON
@@ -26,7 +26,10 @@ app.post('/generate-mindmap', async (req, res) => {
                     },
                     {
                         role: 'user',
-                        content: `Create a mind map JSON for the subject: "${subject}". Only return valid JSON with "title" and "nodes".`
+                        content: `Create a mind map JSON for the subject: "${subject}". 
+                        The mind map should be in ${language} language. 
+                        Only return valid JSON with "title" and "nodes".
+                        If the language is Arabic, make sure to use proper Arabic text.`
                     }
                 ],
                 max_tokens: 500
