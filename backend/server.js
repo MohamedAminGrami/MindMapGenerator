@@ -8,10 +8,50 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = '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';
+
+// Function to detect the primary language of text
+function detectLanguage(text) {
+    // Arabic characters range
+    const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+    // French-specific characters
+    const frenchPattern = /[àâäéèêëïîôùûüÿçœæÀÂÄÉÈÊËÏÎÔÙÛÜŸÇŒÆ]/;
+    
+    const arabicCount = (text.match(new RegExp(arabicPattern, 'g')) || []).length;
+    const frenchCount = (text.match(new RegExp(frenchPattern, 'g')) || []).length;
+    const totalChars = text.replace(/\s/g, '').length;
+    
+    // If more than 20% Arabic characters, it's Arabic
+    if (arabicCount / totalChars > 0.2) {
+        return 'arabic';
+    }
+    
+    // If contains French-specific characters, likely French
+    if (frenchCount > 0) {
+        return 'french';
+    }
+    
+    // Default to English
+    return 'english';
+}
+
+function getLanguageInstruction(language) {
+    switch (language) {
+        case 'arabic':
+            return 'IMPORTANT: Respond ENTIRELY in Arabic (العربية). All text in the title, nodes, and children must be in Arabic only. Do not mix languages.';
+        case 'french':
+            return 'IMPORTANT: Respond ENTIRELY in French (Français). All text in the title, nodes, and children must be in French only. Do not mix languages.';
+        default:
+            return 'IMPORTANT: Respond ENTIRELY in English. All text in the title, nodes, and children must be in English only. Do not mix languages.';
+    }
+}
 
 app.post('/generate-mindmap', async (req, res) => {
-    const { subject, language = 'english' } = req.body;
+    const { subject } = req.body;
+    
+    // Detect the language of the input
+    const detectedLanguage = detectLanguage(subject);
+    const languageInstruction = getLanguageInstruction(detectedLanguage);
 
     try {
         // Call Groq API to get JSON
@@ -22,17 +62,34 @@ app.post('/generate-mindmap', async (req, res) => {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a helpful assistant that generates mind map JSON.'
+                        content: `You are a helpful assistant that generates structured mind map data in JSON format. 
+Create comprehensive mind maps with 3-5 main branches, each with 2-4 sub-topics.
+Every node must include a relevant emoji that represents the concept.
+The structure should be educational and well-organized.
+${languageInstruction}`
                     },
                     {
                         role: 'user',
-                        content: `Create a mind map JSON for the subject: "${subject}". 
-                        The mind map should be in ${language} language. 
-                        Only return valid JSON with "title" and "nodes".
-                        If the language is Arabic, make sure to use proper Arabic text.`
+                        content: `Create a detailed mind map JSON for the subject: "${subject}". 
+${languageInstruction}
+Return ONLY valid JSON with this exact structure:
+{
+  "title": "Main Topic",
+  "nodes": [
+    {
+      "text": "Branch 1 Name",
+      "emoji": "📚",
+      "children": [
+        { "text": "Sub-topic 1", "emoji": "📖" },
+        { "text": "Sub-topic 2", "emoji": "✏️" }
+      ]
+    }
+  ]
+}
+Make sure to include 3-5 main branches with meaningful sub-topics. Each node needs a relevant emoji.`
                     }
                 ],
-                max_tokens: 500
+                max_tokens: 1000
             },
             {
                 headers: {
@@ -71,29 +128,16 @@ app.post('/generate-mindmap', async (req, res) => {
             }
         }
 
-        // Convert JSON to circular Mermaid mindmap syntax
-        const convertToMermaid = (json) => {
-            let mermaid = `mindmap\n  root((${json.title}))\n`;
-            
-            const traverse = (node, indent) => {
-                const text = node.text || node.label || '';
-                mermaid += `${'    '.repeat(indent)}${text}\n`;
-                
-                if (node.children && node.children.length > 0) {
-                    node.children.forEach(child => traverse(child, indent + 1));
-                }
-            };
-            
-            if (json.nodes && json.nodes.length > 0) {
-                json.nodes.forEach(node => traverse(node, 1));
-            }
-            
-            return mermaid;
-        };
+        if (!aiJson || typeof aiJson !== 'object') {
+            throw new Error('Invalid JSON response from AI');
+        }
 
-        const mermaidCode = convertToMermaid(aiJson);
+        if (!aiJson.title || typeof aiJson.title !== 'string') {
+            aiJson.title = String(subject ?? '').trim() || 'Mind Map';
+        }
 
-        res.json({ mermaidCode });
+        // Return the parsed JSON data for the frontend to render
+        res.json({ mindmapData: aiJson });
 
     } catch (error) {
         console.error('Error:', error.response?.data || error.message);
