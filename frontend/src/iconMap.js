@@ -1,3 +1,12 @@
+/**
+ * Icon Map Module
+ * 
+ * Maps keyword strings to Font Awesome react-icons components.
+ * Used by the MindMap component to render icons based on AI-generated keywords.
+ * 
+ * @module iconMap
+ */
+
 import {
   FaGraduationCap, FaBook, FaBookOpen, FaSchool, FaScroll,
   FaFlask, FaMicrochip, FaLaptop, FaCode, FaDatabase,
@@ -17,7 +26,7 @@ import {
   FaHome, FaBuilding, FaCity, FaWarehouse,
   FaRunning, FaSwimmer, FaBicycle, FaFootballBall,
   FaLanguage, FaGlobe, FaFlag, FaCompass,
-  FaRocket, FaSatellite, FaAtom, FaMagnet,
+  FaRocket, FaAtom,
   FaPiggyBank, FaCreditCard, FaReceipt, FaCalculator,
   FaGavel, FaBalanceScale, FaUniversity, FaLandmark,
   FaBrain, FaPuzzlePiece, FaChess, FaCubes,
@@ -26,7 +35,10 @@ import {
   FaSearch, FaFilter, FaSort, FaList
 } from 'react-icons/fa';
 
-// Map icon keywords to React Icon components
+/**
+ * Mapping of keyword strings to Font Awesome icon components.
+ * Organized by category for easy maintenance.
+ */
 const iconMap = {
   // Education & Learning
   education: FaGraduationCap,
@@ -161,12 +173,20 @@ const iconMap = {
   default: FaBookmark
 };
 
-// Get available icon keywords for AI prompt
+/**
+ * Get a comma-separated list of available icon keywords.
+ * Used to inform the AI about valid icon options.
+ * @returns {string} Comma-separated list of icon keywords
+ */
 export const getAvailableIcons = () => {
   return Object.keys(iconMap).filter(k => k !== 'default').join(', ');
 };
 
-// Get icon component by keyword
+/**
+ * Get the icon component for a given keyword.
+ * @param {string} keyword - The icon keyword from the AI response
+ * @returns {React.ComponentType} Font Awesome icon component
+ */
 export const getIcon = (keyword) => {
   if (!keyword) return iconMap.default;
   const key = keyword.toLowerCase().trim();

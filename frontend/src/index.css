@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen',
@@ -11,6 +17,18 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Improve touch scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent pull-to-refresh on mobile */
+  overscroll-behavior-y: contain;
+}
+
+/* Improve tap targets for mobile */
+button, 
+input, 
+select, 
+textarea {
+  touch-action: manipulation;
 }
 
 code {
@@ -313,4 +331,181 @@ code {
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* ===========================================
+   Responsive Design - Tablet
+   =========================================== */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 40px 16px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    padding: 0 10px;
+  }
+
+  .badge {
+    padding: 10px 18px;
+  }
+
+  .badge-text {
+    font-size: 12px;
+  }
+
+  .input-section {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .input-container {
+    flex-direction: column;
+  }
+
+  .input-field {
+    padding: 14px 18px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .generate-button {
+    padding: 14px 24px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mindmap-container {
+    padding: 20px 12px;
+    border-radius: 16px;
+  }
+
+  .mindmap-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .mindmap-title {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .download-button {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+  }
+
+  .mindmap-display {
+    padding: 16px 8px;
+    min-height: 400px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .empty-state {
+    padding: 50px 24px;
+  }
+
+  .empty-state-icon {
+    font-size: 60px;
+  }
+
+  .empty-state-title {
+    font-size: 22px;
+  }
+
+  .empty-state-text {
+    font-size: 14px;
+  }
+}
+
+/* ===========================================
+   Responsive Design - Mobile
+   =========================================== */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 24px 12px;
+  }
+
+  .header {
+    margin-bottom: 30px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .badge {
+    padding: 8px 14px;
+    margin-bottom: 14px;
+  }
+
+  .badge-text {
+    font-size: 11px;
+  }
+
+  .input-section {
+    padding: 20px 14px;
+    margin-bottom: 24px;
+  }
+
+  .input-label {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .input-hint {
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .error-message {
+    padding: 14px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .mindmap-container {
+    padding: 16px 10px;
+  }
+
+  .mindmap-display {
+    padding: 12px 6px;
+    min-height: 350px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+    border-radius: 16px;
+  }
+
+  .empty-state-icon {
+    font-size: 50px;
+    margin-bottom: 16px;
+  }
+
+  .empty-state-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .empty-state-text {
+    font-size: 13px;
+  }
+
+  /* Hide background decorations on small screens */
+  .bg-decoration-1,
+  .bg-decoration-2 {
+    display: none;
+  }
 }

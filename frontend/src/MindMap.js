@@ -1,7 +1,29 @@
+/**
+ * MindMap Component
+ * 
+ * Renders an interactive mind map visualization with:
+ * - Central node for the main topic
+ * - Branch nodes distributed left and right
+ * - Leaf nodes as children of branches
+ * - SVG curved connection lines between nodes
+ * - Color-coded branches with matching icons
+ * 
+ * @module MindMap
+ */
+
 import React, { useMemo, useRef, useLayoutEffect, useState } from 'react';
 import './MindMap.css';
 import { getIcon } from './iconMap';
 
+/**
+ * Color palette for branches.
+ * Each branch gets a unique color scheme with:
+ * - bg: Main background color
+ * - border: Darker border color
+ * - text: Text color (white)
+ * - light: Light background for leaf nodes
+ * - arrow: Connection line color
+ */
 const BRANCH_COLORS = [
   { bg: '#10B981', border: '#059669', text: '#FFFFFF', light: '#D1FAE5', arrow: '#10B981' }, // Green
   { bg: '#F97316', border: '#EA580C', text: '#FFFFFF', light: '#FFEDD5', arrow: '#F97316' }, // Orange
@@ -11,18 +33,36 @@ const BRANCH_COLORS = [
   { bg: '#14B8A6', border: '#0D9488', text: '#FFFFFF', light: '#CCFBF1', arrow: '#14B8A6' }, // Teal
 ];
 
-// Icon component that renders the appropriate icon
+/**
+ * NodeIcon Component
+ * Renders a Font Awesome icon based on the keyword from AI response.
+ * 
+ * @param {string} iconName - Icon keyword to look up
+ * @param {string} className - CSS class for styling
+ */
 const NodeIcon = ({ iconName, className }) => {
   const IconComponent = getIcon(iconName);
   return <IconComponent className={className} />;
 };
 
+/**
+ * MindMap Component
+ * Main visualization component that renders the entire mind map.
+ * 
+ * @param {Object} data - Mind map data from AI
+ * @param {string} data.title - Central topic title
+ * @param {Array} data.nodes - Array of branch nodes with children
+ */
 const MindMap = ({ data }) => {
   const containerRef = useRef(null);
   const centerRef = useRef(null);
   const [connections, setConnections] = useState([]);
   const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
   
+  /**
+   * Process and distribute nodes between left and right sides.
+   * Alternates nodes to balance the layout.
+   */
   const processedData = useMemo(() => {
     if (!data || !data.nodes) return null;
     
@@ -30,6 +70,7 @@ const MindMap = ({ data }) => {
     const leftNodes = [];
     const rightNodes = [];
     
+    // Alternate distribution: even indices go right, odd go left
     nodes.forEach((node, index) => {
       if (index % 2 === 0) {
         rightNodes.push({ ...node, colorIndex: index });
@@ -41,7 +82,11 @@ const MindMap = ({ data }) => {
     return { title: data.title, leftNodes, rightNodes };
   }, [data]);
 
-  // Calculate connection paths after render
+  /**
+   * Calculate SVG connection paths between nodes.
+   * Uses useLayoutEffect to measure DOM positions after render.
+   * Recalculates on window resize.
+   */
   useLayoutEffect(() => {
     if (!containerRef.current || !centerRef.current || !processedData) return;
 
@@ -142,6 +187,14 @@ const MindMap = ({ data }) => {
 
   if (!processedData) return null;
 
+  /**
+   * Renders a branch node with its children (leaf nodes).
+   * Handles both left and right side positioning.
+   * 
+   * @param {Object} node - Branch node data
+   * @param {number} index - Node index for keys
+   * @param {string} side - 'left' or 'right' positioning
+   */
   const renderBranch = (node, index, side) => {
     const color = BRANCH_COLORS[node.colorIndex % BRANCH_COLORS.length];
     const children = node.children || [];
@@ -212,13 +265,10 @@ const MindMap = ({ data }) => {
 
       {/* Background Decorations */}
       <div className="mindmap-bg">
-        <div className="bg-circle bg-circle-1"></div>
-        <div className="bg-circle bg-circle-2"></div>
-        <div className="bg-circle bg-circle-3"></div>
-        <div className="bg-icon bg-icon-1">💡</div>
-        <div className="bg-icon bg-icon-2">📚</div>
-        <div className="bg-icon bg-icon-3">🔬</div>
-        <div className="bg-icon bg-icon-4">✨</div>
+        <div className="bg-pattern"></div>
+        <div className="bg-glow bg-glow-1"></div>
+        <div className="bg-glow bg-glow-2"></div>
+        <div className="bg-glow bg-glow-3"></div>
       </div>
       
       <div className="mindmap-layout">

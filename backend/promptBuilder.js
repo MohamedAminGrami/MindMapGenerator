@@ -1,4 +1,11 @@
-// Available icon keywords for the AI prompt
+/**
+ * Prompt Builder Module
+ * 
+ * Handles AI prompt construction for mind map generation.
+ * Supports multiple languages (English, French, Arabic).
+ */
+
+// Available icon keywords that map to react-icons in the frontend
 const availableIcons = [
     // Education & Learning
     'education', 'book', 'study', 'school', 'graduation',
@@ -36,57 +43,64 @@ const availableIcons = [
     'star', 'check', 'warning', 'info', 'settings', 'target', 'flag'
 ];
 
+/**
+ * Get language-specific instructions for the AI
+ * @param {string} language - Language code ('en', 'fr', 'ar')
+ * @returns {string} Language instruction for the AI prompt
+ */
 function getLanguageInstruction(language) {
     switch (language) {
         case 'ar':
-            return 'IMPORTANT: Respond ENTIRELY in Arabic (العربية). All text in the title, nodes, and children must be in Arabic only. Do not mix languages.';
+            return 'IMPORTANT: Respond ENTIRELY in Arabic (العربية). All text must be in Arabic only.';
         case 'fr':
-            return 'IMPORTANT: Respond ENTIRELY in French (Français). All text in the title, nodes, and children must be in French only. Do not mix languages.';
+            return 'IMPORTANT: Respond ENTIRELY in French (Français). All text must be in French only.';
         default:
-            return 'IMPORTANT: Respond ENTIRELY in English. All text in the title, nodes, and children must be in English only. Do not mix languages.';
+            return 'IMPORTANT: Respond ENTIRELY in English. All text must be in English only.';
     }
 }
 
-// Build the messages array for the AI request
+/**
+ * Build the complete prompt configuration for the AI API
+ * @param {string} subject - The topic to generate a mind map for
+ * @param {string} language - Output language code ('en', 'fr', 'ar')
+ * @returns {object} Complete API request configuration
+ */
 function buildMindMapPrompt(subject, language = 'en') {
     const languageInstruction = getLanguageInstruction(language);
     const iconsList = availableIcons.join(', ');
     
     return {
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 1000,
         messages: [
             {
                 role: 'system',
                 content: `You are a helpful assistant that generates structured mind map data in JSON format. 
 Create comprehensive mind maps with 3-5 main branches, each with 2-4 sub-topics.
-Every node must include an "icon" field with ONE keyword from this list: ${iconsList}
+Every node must include an "icon" field with ONE keyword from: ${iconsList}
 Choose the most relevant icon keyword for each concept.
-The structure should be educational and well-organized.
 ${languageInstruction}`
             },
             {
                 role: 'user',
-                content: `Create a detailed mind map JSON for the subject: "${subject}". 
+                content: `Create a mind map JSON for: "${subject}". 
 ${languageInstruction}
-Return ONLY valid JSON with this exact structure:
+Return ONLY valid JSON:
 {
   "title": "Main Topic",
   "nodes": [
     {
-      "text": "Branch 1 Name",
-      "icon": "keyword_from_list",
+      "text": "Branch Name",
+      "icon": "icon_keyword",
       "children": [
-        { "text": "Sub-topic 1", "icon": "keyword_from_list" },
-        { "text": "Sub-topic 2", "icon": "keyword_from_list" }
+        { "text": "Sub-topic", "icon": "icon_keyword" }
       ]
     }
   ]
 }
-Use ONLY these icon keywords: ${iconsList}
-Make sure to include 3-5 main branches with meaningful sub-topics.`
+Use ONLY these icons: ${iconsList}`
             }
-        ],
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 1000
+        ]
     };
 }
 
