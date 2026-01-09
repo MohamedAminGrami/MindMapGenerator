@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const GROQ_API_KEY = 'YOUR_API_KEY';
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 // Function to detect the primary language of text
 function detectLanguage(text) {
