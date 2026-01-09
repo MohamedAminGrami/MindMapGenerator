@@ -1,0 +1,316 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Main Container */
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  padding: 60px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Decorations */
+.bg-decoration-1 {
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bg-decoration-2 {
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  border-radius: 50px;
+  margin-bottom: 20px;
+}
+
+.badge-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #cbd5e1;
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Input Section */
+.input-section {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  padding: 48px;
+  margin-bottom: 40px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.input-field {
+  padding: 16px 24px;
+  font-size: 16px;
+  flex: 1;
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  border-radius: 12px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: rgba(15, 23, 42, 0.5);
+  color: #e2e8f0;
+}
+
+.input-field:focus {
+  border-color: #6366f1;
+  background-color: rgba(15, 23, 42, 0.8);
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+}
+
+.input-field::placeholder {
+  color: #64748b;
+}
+
+.generate-button {
+  padding: 16px 40px;
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.generate-button:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.generate-button:disabled {
+  background: rgba(100, 116, 139, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.input-hint {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Error Message */
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.5);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  color: #fca5a5;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Mind Map Display */
+.mindmap-container {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  padding: 48px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.mindmap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.mindmap-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: #e2e8f0;
+  letter-spacing: 0.2px;
+}
+
+.download-button {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+}
+
+.download-button:disabled {
+  background: rgba(100, 116, 139, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.mindmap-display {
+  background-color: rgba(247, 250, 255, 0.95);
+  border-radius: 16px;
+  padding: 28px;
+  min-height: 500px;
+  display: block;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+ .mindmap-display .mermaid {
+  width: 100%;
+ }
+
+ .mindmap-display svg {
+  max-width: 100%;
+  height: auto;
+ }
+
+/* Empty State */
+.empty-state {
+  background-color: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(20px);
+  border: 2px dashed rgba(148, 163, 184, 0.3);
+  border-radius: 20px;
+  padding: 80px 40px;
+  text-align: center;
+  color: #cbd5e1;
+}
+
+.empty-state-icon {
+  font-size: 80px;
+  margin-bottom: 24px;
+}
+
+.empty-state-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #e2e8f0;
+}
+
+.empty-state-text {
+  font-size: 16px;
+  opacity: 0.8;
+  margin: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
