@@ -71,34 +71,83 @@ function buildMindMapPrompt(subject, language = 'en') {
     
     return {
         model: 'llama-3.3-70b-versatile',
-        max_tokens: 1000,
+        max_tokens: 3000,
         messages: [
             {
                 role: 'system',
-                content: `You are a helpful assistant that generates structured mind map data in JSON format. 
-Create comprehensive mind maps with 3-5 main branches, each with 2-4 sub-topics.
-Every node must include an "icon" field with ONE keyword from: ${iconsList}
-Choose the most relevant icon keyword for each concept.
+                content: `You are an expert educational content creator that generates rich, comprehensive mind map data in JSON format.
+
+FIRST, DETECT THE INPUT TYPE:
+1. If the input is a VERB (action word like "to eat", "manger", "يأكل", "run", "speak"):
+   - Create a VERB CONJUGATION mind map
+   - Main branches = Tenses (Present, Past, Future, Conditional, etc.)
+   - Children = Conjugations for different pronouns (I, You, He/She, We, They, etc.)
+   - Include as many tenses as relevant for the language (6-10 tenses)
+   - Include all pronoun forms as children (5-8 per tense)
+
+2. If the input is a TOPIC/NOUN/CONCEPT:
+   - Create a KNOWLEDGE mind map
+   - Main branches = Key aspects, categories, or dimensions (4-8 branches)
+   - Children = Detailed sub-topics, examples, facts (3-6 per branch)
+   - Use varied vocabulary with different verb tenses in descriptions
+   - Mix definitions, processes, examples, applications
+
+IMPORTANT RULES:
+- You can create MORE than 5 main branches if needed (up to 10)
+- You can create MORE than 4 children per branch if needed (up to 10)
+- Every node MUST include an "icon" field with ONE keyword from: ${iconsList}
+- For verb conjugations, use "time" or "calendar" icons for tenses, "people" for pronouns
+
 ${languageInstruction}`
             },
             {
                 role: 'user',
-                content: `Create a mind map JSON for: "${subject}". 
+                content: `Create a mind map JSON for: "${subject}".
+
 ${languageInstruction}
-Return ONLY valid JSON:
+
+DETECTION RULES:
+- If "${subject}" is a verb → Create conjugation tables with tenses as branches
+- If "${subject}" is a topic → Create educational content mind map
+
+For VERBS, use this structure:
 {
-  "title": "Main Topic",
+  "title": "Verb: [infinitive form]",
   "nodes": [
     {
-      "text": "Branch Name",
-      "icon": "icon_keyword",
+      "text": "Present Tense",
+      "icon": "time",
       "children": [
-        { "text": "Sub-topic", "icon": "icon_keyword" }
+        { "text": "I [conjugation]", "icon": "people" },
+        { "text": "You [conjugation]", "icon": "people" },
+        { "text": "He/She [conjugation]", "icon": "people" },
+        { "text": "We [conjugation]", "icon": "people" },
+        { "text": "They [conjugation]", "icon": "people" }
+      ]
+    },
+    {
+      "text": "Past Tense",
+      "icon": "history",
+      "children": [...]
+    }
+  ]
+}
+
+For TOPICS, use this structure:
+{
+  "title": "Topic Title",
+  "nodes": [
+    {
+      "text": "Main Concept",
+      "icon": "relevant_icon",
+      "children": [
+        { "text": "Detailed point", "icon": "relevant_icon" }
       ]
     }
   ]
 }
-Use ONLY these icons: ${iconsList}`
+
+Return ONLY valid JSON. Use icons from: ${iconsList}`
             }
         ]
     };

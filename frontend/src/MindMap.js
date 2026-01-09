@@ -16,7 +16,7 @@ import './MindMap.css';
 import { getIcon } from './iconMap';
 
 /**
- * Color palette for branches.
+ * Color palette for branches (supports up to 10+ branches).
  * Each branch gets a unique color scheme with:
  * - bg: Main background color
  * - border: Darker border color
@@ -31,6 +31,10 @@ const BRANCH_COLORS = [
   { bg: '#8B5CF6', border: '#7C3AED', text: '#FFFFFF', light: '#EDE9FE', arrow: '#8B5CF6' }, // Purple
   { bg: '#EC4899', border: '#DB2777', text: '#FFFFFF', light: '#FCE7F3', arrow: '#EC4899' }, // Pink
   { bg: '#14B8A6', border: '#0D9488', text: '#FFFFFF', light: '#CCFBF1', arrow: '#14B8A6' }, // Teal
+  { bg: '#EF4444', border: '#DC2626', text: '#FFFFFF', light: '#FEE2E2', arrow: '#EF4444' }, // Red
+  { bg: '#F59E0B', border: '#D97706', text: '#FFFFFF', light: '#FEF3C7', arrow: '#F59E0B' }, // Amber
+  { bg: '#6366F1', border: '#4F46E5', text: '#FFFFFF', light: '#E0E7FF', arrow: '#6366F1' }, // Indigo
+  { bg: '#84CC16', border: '#65A30D', text: '#FFFFFF', light: '#ECFCCB', arrow: '#84CC16' }, // Lime
 ];
 
 /**
