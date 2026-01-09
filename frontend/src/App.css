@@ -51,28 +51,84 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+/* Layout Selector */
+.layout-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.layout-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.layout-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.layout-btn {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.layout-btn:hover {
+  border-color: #10b981;
+  background: #f8fafc;
+}
+
+.layout-btn.active {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
 /* ===========================================
-   Language Selector - Responsive
+   Language & Layout Selector - Responsive
    =========================================== */
 @media (max-width: 480px) {
   .language-selector {
     margin-bottom: 16px;
   }
 
-  .language-label {
+  .language-label,
+  .layout-label {
     font-size: 12px;
   }
 
-  .language-options {
+  .language-options,
+  .layout-options {
     gap: 6px;
     width: 100%;
   }
 
-  .language-btn {
+  .language-btn,
+  .layout-btn {
     padding: 8px 12px;
     font-size: 12px;
     flex: 1;
     justify-content: center;
     min-width: 0;
+  }
+
+  .layout-selector {
+    margin-bottom: 16px;
   }
 }

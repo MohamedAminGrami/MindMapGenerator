@@ -58,19 +58,27 @@ app.post('/generate-mindmap', async (req, res) => {
         try {
             aiJson = JSON.parse(content);
         } catch (parseError) {
-            // Try to fix common JSON issues
-            content = content
-                .replace(/[\r\n]+/g, ' ')
-                .replace(/,\s*}/g, '}')
-                .replace(/,\s*]/g, ']')
-                .replace(/:\s*'/g, ':"')
-                .replace(/'\s*,/g, '",')
-                .replace(/'\s*}/g, '"}');
-            
-            try {
-                aiJson = JSON.parse(content);
-            } catch (retryError) {
-                console.error('Failed to parse JSON:', content.substring(0, 200));
+            // Try to extract JSON from response if there's text around it
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                try {
+                    aiJson = JSON.parse(jsonMatch[0]);
+                } catch (extractError) {
+                    // Try to fix common JSON issues
+                    let fixedContent = jsonMatch[0]
+                        .replace(/[\r\n]+/g, ' ')
+                        .replace(/,\s*}/g, '}')
+                        .replace(/,\s*]/g, ']');
+                    
+                    try {
+                        aiJson = JSON.parse(fixedContent);
+                    } catch (retryError) {
+                        console.error('Failed to parse JSON:', content.substring(0, 300));
+                        throw new Error('Invalid JSON response from AI');
+                    }
+                }
+            } else {
+                console.error('No JSON found in response:', content.substring(0, 300));
                 throw new Error('Invalid JSON response from AI');
             }
         }

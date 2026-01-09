@@ -3,7 +3,7 @@
  * 
  * Renders an interactive mind map visualization with:
  * - Central node for the main topic
- * - Branch nodes distributed left and right
+ * - Branch nodes distributed left and right (or top and bottom)
  * - Leaf nodes as children of branches
  * - SVG curved connection lines between nodes
  * - Color-coded branches with matching icons
@@ -13,29 +13,11 @@
 
 import React, { useMemo, useRef, useLayoutEffect, useState } from 'react';
 import './MindMap.css';
-import { getIcon } from './iconMap';
 
-/**
- * Color palette for branches (supports up to 10+ branches).
- * Each branch gets a unique color scheme with:
- * - bg: Main background color
- * - border: Darker border color
- * - text: Text color (white)
- * - light: Light background for leaf nodes
- * - arrow: Connection line color
- */
-const BRANCH_COLORS = [
-  { bg: '#10B981', border: '#059669', text: '#FFFFFF', light: '#D1FAE5', arrow: '#10B981' }, // Green
-  { bg: '#F97316', border: '#EA580C', text: '#FFFFFF', light: '#FFEDD5', arrow: '#F97316' }, // Orange
-  { bg: '#3B82F6', border: '#2563EB', text: '#FFFFFF', light: '#DBEAFE', arrow: '#3B82F6' }, // Blue
-  { bg: '#8B5CF6', border: '#7C3AED', text: '#FFFFFF', light: '#EDE9FE', arrow: '#8B5CF6' }, // Purple
-  { bg: '#EC4899', border: '#DB2777', text: '#FFFFFF', light: '#FCE7F3', arrow: '#EC4899' }, // Pink
-  { bg: '#14B8A6', border: '#0D9488', text: '#FFFFFF', light: '#CCFBF1', arrow: '#14B8A6' }, // Teal
-  { bg: '#EF4444', border: '#DC2626', text: '#FFFFFF', light: '#FEE2E2', arrow: '#EF4444' }, // Red
-  { bg: '#F59E0B', border: '#D97706', text: '#FFFFFF', light: '#FEF3C7', arrow: '#F59E0B' }, // Amber
-  { bg: '#6366F1', border: '#4F46E5', text: '#FFFFFF', light: '#E0E7FF', arrow: '#6366F1' }, // Indigo
-  { bg: '#84CC16', border: '#65A30D', text: '#FFFFFF', light: '#ECFCCB', arrow: '#84CC16' }, // Lime
-];
+// Import from modular files
+import { getBranchColor } from './constants';
+import { calculateConnections, generatePathD } from './utils';
+import { getIcon } from './iconMap';
 
 /**
  * NodeIcon Component
@@ -52,19 +34,22 @@ const NodeIcon = ({ iconName, className }) => {
 /**
  * MindMap Component
  * Main visualization component that renders the entire mind map.
+ * Supports horizontal (left-center-right) and vertical (top-center-bottom) layouts.
  * 
  * @param {Object} data - Mind map data from AI
  * @param {string} data.title - Central topic title
  * @param {Array} data.nodes - Array of branch nodes with children
+ * @param {string} layout - 'horizontal' or 'vertical'
  */
-const MindMap = ({ data }) => {
+const MindMap = ({ data, layout = 'horizontal' }) => {
   const containerRef = useRef(null);
   const centerRef = useRef(null);
   const [connections, setConnections] = useState([]);
   const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
+  const isVertical = layout === 'vertical';
   
   /**
-   * Process and distribute nodes between left and right sides.
+   * Process and distribute nodes between left/right or top/bottom sides.
    * Alternates nodes to balance the layout.
    */
   const processedData = useMemo(() => {
@@ -94,113 +79,35 @@ const MindMap = ({ data }) => {
   useLayoutEffect(() => {
     if (!containerRef.current || !centerRef.current || !processedData) return;
 
-    const calculateConnections = () => {
-      const container = containerRef.current;
-      const center = centerRef.current;
-      if (!container || !center) return;
-      
-      const containerRect = container.getBoundingClientRect();
-      const centerRect = center.getBoundingClientRect();
-      
-      // Set SVG size
-      setSvgSize({ 
-        width: containerRect.width, 
-        height: containerRect.height 
-      });
-      
-      const centerX = centerRect.left + centerRect.width / 2 - containerRect.left;
-      const centerY = centerRect.top + centerRect.height / 2 - containerRect.top;
-      const centerRadius = centerRect.width / 2;
-
-      const newConnections = [];
-
-      // Get all branch groups
-      const branchGroups = container.querySelectorAll('.branch-row');
-
-      branchGroups.forEach((group) => {
-        const branchNode = group.querySelector('.branch-node');
-        const leafNodes = group.querySelectorAll('.leaf-node');
-        const isLeft = group.classList.contains('branch-row-left');
-        
-        if (branchNode) {
-          const branchRect = branchNode.getBoundingClientRect();
-          const branchX = isLeft 
-            ? branchRect.right - containerRect.left
-            : branchRect.left - containerRect.left;
-          const branchY = branchRect.top + branchRect.height / 2 - containerRect.top;
-          
-          // Get color from data attribute or compute
-          const colorIndex = parseInt(branchNode.dataset.colorIndex || '0');
-          const color = BRANCH_COLORS[colorIndex % BRANCH_COLORS.length];
-          
-          // Connection from center to branch
-          const startX = isLeft ? centerX - centerRadius : centerX + centerRadius;
-          
-          newConnections.push({
-            type: 'center-to-branch',
-            startX,
-            startY: centerY,
-            endX: branchX,
-            endY: branchY,
-            color: color.bg,
-            isLeft
-          });
-
-          // Connections from branch to leaves
-          leafNodes.forEach((leaf) => {
-            const leafRect = leaf.getBoundingClientRect();
-            // For left side: line goes from branch LEFT edge to leaf RIGHT edge
-            // For right side: line goes from branch RIGHT edge to leaf LEFT edge
-            const leafX = isLeft
-              ? leafRect.right - containerRect.left
-              : leafRect.left - containerRect.left;
-            const leafY = leafRect.top + leafRect.height / 2 - containerRect.top;
-            
-            const branchStartX = isLeft
-              ? branchRect.left - containerRect.left
-              : branchRect.right - containerRect.left;
-            const branchStartY = branchRect.top + branchRect.height / 2 - containerRect.top;
-
-            newConnections.push({
-              type: 'branch-to-leaf',
-              startX: branchStartX,
-              startY: branchStartY,
-              endX: leafX,
-              endY: leafY,
-              color: color.bg,
-              isLeft
-            });
-          });
-        }
-      });
-
-      setConnections(newConnections);
+    const updateConnections = () => {
+      const result = calculateConnections(containerRef.current, centerRef.current);
+      setConnections(result.connections);
+      setSvgSize(result.svgSize);
     };
 
-    // Calculate after DOM is ready
-    const timer = setTimeout(calculateConnections, 150);
+    // Calculate after DOM is ready (longer delay for layout changes)
+    const timer = setTimeout(updateConnections, 200);
     
     // Also recalculate on window resize
-    window.addEventListener('resize', calculateConnections);
+    window.addEventListener('resize', updateConnections);
     
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', calculateConnections);
+      window.removeEventListener('resize', updateConnections);
     };
-  }, [processedData]);
+  }, [processedData, isVertical]);
 
   if (!processedData) return null;
 
   /**
    * Renders a branch node with its children (leaf nodes).
-   * Handles both left and right side positioning.
    * 
    * @param {Object} node - Branch node data
    * @param {number} index - Node index for keys
-   * @param {string} side - 'left' or 'right' positioning
+   * @param {string} side - 'left', 'right', 'top', or 'bottom' positioning
    */
   const renderBranch = (node, index, side) => {
-    const color = BRANCH_COLORS[node.colorIndex % BRANCH_COLORS.length];
+    const color = getBranchColor(node.colorIndex);
     const children = node.children || [];
     
     return (
@@ -241,30 +148,24 @@ const MindMap = ({ data }) => {
   };
 
   return (
-    <div className="mindmap-wrapper" ref={containerRef}>
-      {/* SVG Layer for all connections */}
+    <div className={`mindmap-wrapper ${isVertical ? 'mindmap-vertical' : 'mindmap-horizontal'}`} ref={containerRef}>
+      {/* SVG Layer for all connections (z-index: 1 to appear behind nodes) */}
       <svg 
         className="connections-svg" 
         width={svgSize.width} 
         height={svgSize.height}
-        style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', zIndex: 5 }}
+        style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', zIndex: 1 }}
       >
-        {connections.map((conn, idx) => {
-          const dx = conn.endX - conn.startX;
-          const controlX1 = conn.startX + dx * 0.4;
-          const controlX2 = conn.startX + dx * 0.6;
-          
-          return (
-            <path
-              key={idx}
-              d={`M ${conn.startX},${conn.startY} C ${controlX1},${conn.startY} ${controlX2},${conn.endY} ${conn.endX},${conn.endY}`}
-              fill="none"
-              stroke={conn.color}
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          );
-        })}
+        {connections.map((conn, idx) => (
+          <path
+            key={idx}
+            d={generatePathD(conn)}
+            fill="none"
+            stroke={conn.color}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+        ))}
       </svg>
 
       {/* Background Decorations */}
@@ -275,11 +176,11 @@ const MindMap = ({ data }) => {
         <div className="bg-glow bg-glow-3"></div>
       </div>
       
-      <div className="mindmap-layout">
-        {/* Left Side Branches */}
-        <div className="branches-side branches-left">
+      <div className={`mindmap-layout ${isVertical ? 'layout-vertical' : 'layout-horizontal'}`}>
+        {/* Top/Left Side Branches */}
+        <div className={`branches-side ${isVertical ? 'branches-top' : 'branches-left'}`}>
           {processedData.leftNodes.map((node, index) => 
-            renderBranch(node, index, 'left')
+            renderBranch(node, index, isVertical ? 'top' : 'left')
           )}
         </div>
         
@@ -294,10 +195,10 @@ const MindMap = ({ data }) => {
           </div>
         </div>
         
-        {/* Right Side Branches */}
-        <div className="branches-side branches-right">
+        {/* Bottom/Right Side Branches */}
+        <div className={`branches-side ${isVertical ? 'branches-bottom' : 'branches-right'}`}>
           {processedData.rightNodes.map((node, index) => 
-            renderBranch(node, index, 'right')
+            renderBranch(node, index, isVertical ? 'bottom' : 'right')
           )}
         </div>
       </div>

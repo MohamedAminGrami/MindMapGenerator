@@ -16,7 +16,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* SVG Connections Layer */
+/* SVG Connections Layer - z-index: 1 to appear behind nodes */
 .connections-svg {
   position: absolute;
   top: 0;
@@ -24,7 +24,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 5;
+  z-index: 1;
   overflow: visible;
 }
 
@@ -182,6 +182,8 @@
 
 /* Branch Row - Contains branch node and children */
 .branch-row {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -254,6 +256,8 @@
 
 /* Branch Node */
 .branch-node {
+  position: relative;
+  z-index: 10;
   padding: 12px 20px;
   border-radius: 25px;
   font-weight: 600;
@@ -296,6 +300,8 @@
 
 /* Leaf Node */
 .leaf-node {
+  position: relative;
+  z-index: 10;
   padding: 10px 16px;
   border-radius: 20px;
   font-size: 13px;
@@ -521,3 +527,124 @@
     gap: 6px;
   }
 }
+
+/* ===========================================
+   Vertical Layout Styles
+   =========================================== */
+
+/* Vertical wrapper adjustments */
+.mindmap-vertical {
+  min-width: 600px;
+  min-height: 800px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Vertical layout - column direction */
+.layout-vertical {
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Top branches container */
+.mindmap-vertical .branches-top {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  min-width: unset;
+  width: 100%;
+  padding: 0;
+}
+
+/* Bottom branches container */
+.mindmap-vertical .branches-bottom {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: unset;
+  width: 100%;
+  padding: 0;
+}
+
+/* Vertical branch row - stack vertically */
+.mindmap-vertical .branch-row {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mindmap-vertical .branch-row-top {
+  flex-direction: column-reverse;
+}
+
+.mindmap-vertical .branch-row-bottom {
+  flex-direction: column;
+}
+
+/* Vertical children column - horizontal */
+.mindmap-vertical .children-column {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.mindmap-vertical .children-column-top,
+.mindmap-vertical .children-column-bottom {
+  align-items: center;
+}
+
+/* Vertical layout animations */
+.mindmap-vertical .branch-row {
+  animation-name: branchAppearVertical;
+}
+
+.mindmap-vertical .branch-row-top {
+  animation-name: branchAppearVerticalTop;
+}
+
+@keyframes branchAppearVertical {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes branchAppearVerticalTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Vertical layout responsive */
+@media (max-width: 768px) {
+  .mindmap-vertical {
+    min-width: unset;
+    min-height: 600px;
+  }
+
+  .layout-vertical {
+    gap: 30px;
+  }
+
+  .mindmap-vertical .branches-top,
+  .mindmap-vertical .branches-bottom {
+    gap: 15px;
+  }
+}
+

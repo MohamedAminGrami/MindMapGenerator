@@ -9,6 +9,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 function App() {
   const [subject, setSubject] = useState('');
   const [language, setLanguage] = useState('en');
+  const [layout, setLayout] = useState('horizontal'); // 'horizontal' or 'vertical'
   const [mindmapData, setMindmapData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -157,6 +158,26 @@ function App() {
               </button>
             </div>
           </div>
+
+          <div className="layout-selector">
+            <label className="layout-label">Layout:</label>
+            <div className="layout-options">
+              <button 
+                className={`layout-btn ${layout === 'horizontal' ? 'active' : ''}`}
+                onClick={() => setLayout('horizontal')}
+                title="Horizontal Layout"
+              >
+                ↔️ Horizontal
+              </button>
+              <button 
+                className={`layout-btn ${layout === 'vertical' ? 'active' : ''}`}
+                onClick={() => setLayout('vertical')}
+                title="Vertical Layout"
+              >
+                ↕️ Vertical
+              </button>
+            </div>
+          </div>
           
           <div className="input-container">
             <input
@@ -211,7 +232,7 @@ function App() {
               </button>
             </div>
             <div className="mindmap-display" ref={mindmapRef}>
-              <MindMap data={mindmapData} />
+              <MindMap data={mindmapData} layout={layout} />
             </div>
           </div>
         )}
