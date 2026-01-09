@@ -273,6 +273,13 @@
   font-size: 1.2em;
 }
 
+.branch-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
 .branch-text {
   line-height: 1.2;
 }
@@ -302,6 +309,14 @@
 
 .leaf-emoji {
   font-size: 1.1em;
+}
+
+.leaf-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-right: 4px;
+  color: inherit;
 }
 
 .leaf-text {

@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [subject, setSubject] = useState('');
+  const [language, setLanguage] = useState('en');
   const [mindmapData, setMindmapData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -24,7 +25,7 @@ function App() {
       const res = await fetch('http://localhost:5000/generate-mindmap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject })
+        body: JSON.stringify({ subject, language })
       });
       
       if (!res.ok) {
@@ -119,6 +120,30 @@ function App() {
         {/* Input Section */}
         <div className="input-section">
           <label className="input-label">What would you like to explore?</label>
+          
+          <div className="language-selector">
+            <label className="language-label">Output Language:</label>
+            <div className="language-options">
+              <button 
+                className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                onClick={() => setLanguage('en')}
+              >
+                English
+              </button>
+              <button 
+                className={`language-btn ${language === 'fr' ? 'active' : ''}`}
+                onClick={() => setLanguage('fr')}
+              >
+                Français
+              </button>
+              <button 
+                className={`language-btn ${language === 'ar' ? 'active' : ''}`}
+                onClick={() => setLanguage('ar')}
+              >
+                العربية
+              </button>
+            </div>
+          </div>
           
           <div className="input-container">
             <input

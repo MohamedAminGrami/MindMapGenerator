@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useLayoutEffect, useState } from 'react';
 import './MindMap.css';
+import { getIcon } from './iconMap';
 
 const BRANCH_COLORS = [
   { bg: '#10B981', border: '#059669', text: '#FFFFFF', light: '#D1FAE5', arrow: '#10B981' }, // Green
@@ -9,6 +10,12 @@ const BRANCH_COLORS = [
   { bg: '#EC4899', border: '#DB2777', text: '#FFFFFF', light: '#FCE7F3', arrow: '#EC4899' }, // Pink
   { bg: '#14B8A6', border: '#0D9488', text: '#FFFFFF', light: '#CCFBF1', arrow: '#14B8A6' }, // Teal
 ];
+
+// Icon component that renders the appropriate icon
+const NodeIcon = ({ iconName, className }) => {
+  const IconComponent = getIcon(iconName);
+  return <IconComponent className={className} />;
+};
 
 const MindMap = ({ data }) => {
   const containerRef = useRef(null);
@@ -93,19 +100,22 @@ const MindMap = ({ data }) => {
           // Connections from branch to leaves
           leafNodes.forEach((leaf) => {
             const leafRect = leaf.getBoundingClientRect();
+            // For left side: line goes from branch LEFT edge to leaf RIGHT edge
+            // For right side: line goes from branch RIGHT edge to leaf LEFT edge
             const leafX = isLeft
               ? leafRect.right - containerRect.left
               : leafRect.left - containerRect.left;
             const leafY = leafRect.top + leafRect.height / 2 - containerRect.top;
             
-            const branchEndX = isLeft
+            const branchStartX = isLeft
               ? branchRect.left - containerRect.left
               : branchRect.right - containerRect.left;
+            const branchStartY = branchRect.top + branchRect.height / 2 - containerRect.top;
 
             newConnections.push({
               type: 'branch-to-leaf',
-              startX: branchEndX,
-              startY: branchY,
+              startX: branchStartX,
+              startY: branchStartY,
               endX: leafX,
               endY: leafY,
               color: color.bg,
@@ -147,7 +157,7 @@ const MindMap = ({ data }) => {
             borderColor: color.border,
           }}
         >
-          {node.emoji && <span className="branch-emoji">{node.emoji}</span>}
+          <NodeIcon iconName={node.icon} className="branch-icon" />
           <span className="branch-text">{node.text || node.label}</span>
         </div>
         
@@ -163,7 +173,7 @@ const MindMap = ({ data }) => {
                   borderColor: color.bg,
                 }}
               >
-                {child.emoji && <span className="leaf-emoji">{child.emoji}</span>}
+                <NodeIcon iconName={child.icon} className="leaf-icon" />
                 <span className="leaf-text">{child.text || child.label}</span>
               </div>
             ))}
