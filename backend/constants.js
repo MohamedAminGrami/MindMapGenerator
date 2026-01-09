@@ -1,7 +1,7 @@
 /**
  * Available Icons Constants
  * 
- * List of icon keywords that map to react-icons in the frontend.
+ * List of icon keywords that map to Icons8 3D Fluency icons in the frontend.
  * Organized by category for easy maintenance.
  */
 
@@ -22,7 +22,7 @@ const AVAILABLE_ICONS = [
   'swimming', 'cycling', 'sports',
   
   // Nature & Environment
-  'nature', 'plant', 'earth', 'water',
+  'nature', 'plant', 'earth', 'water', 'mountain',
   
   // Food & Drink
   'food', 'coffee', 'fruit', 'cooking',
@@ -52,10 +52,13 @@ const AVAILABLE_ICONS = [
   'brain', 'puzzle', 'strategy', 'blocks',
   
   // Achievement & Recognition
-  'handshake', 'award', 'trophy', 'medal',
+  'handshake', 'award', 'trophy', 'medal', 'victory',
   
   // Files & Organization
   'file', 'folder', 'clipboard', 'tasks', 'search', 'filter', 'sort', 'list',
+  
+  // War & History
+  'war', 'battle', 'army', 'soldier', 'sword', 'elephant', 'king', 'leader', 'defeat',
   
   // General
   'star', 'check', 'warning', 'info', 'settings', 'target', 'flag'

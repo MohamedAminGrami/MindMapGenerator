@@ -17,18 +17,18 @@ import './MindMap.css';
 // Import from modular files
 import { getBranchColor } from './constants';
 import { calculateConnections, generatePathD } from './utils';
-import { getIcon } from './iconMap';
+import { getIconUrl } from './icons8Map';
 
 /**
  * NodeIcon Component
- * Renders a Font Awesome icon based on the keyword from AI response.
+ * Renders a 3D Fluency icon from Icons8 based on the keyword from AI response.
  * 
  * @param {string} iconName - Icon keyword to look up
  * @param {string} className - CSS class for styling
  */
 const NodeIcon = ({ iconName, className }) => {
-  const IconComponent = getIcon(iconName);
-  return <IconComponent className={className} />;
+  const iconUrl = getIconUrl(iconName);
+  return <img src={iconUrl} alt="" className={className} />;
 };
 
 /**
