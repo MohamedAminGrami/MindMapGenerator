@@ -1,38 +1,134 @@
-.App {
-  text-align: center;
-}
+/* ===========================================
+   App.css - Main Application Styles
+   =========================================== */
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Language Selector */
+.language-selector {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.language-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.language-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.language-btn {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-btn:hover {
+  border-color: #3b82f6;
+  background: #f8fafc;
+}
+
+.language-btn.active {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-.App-link {
-  color: #61dafb;
+/* Layout Selector */
+.layout-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.layout-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.layout-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.layout-btn {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.layout-btn:hover {
+  border-color: #10b981;
+  background: #f8fafc;
+}
+
+.layout-btn.active {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* ===========================================
+   Language & Layout Selector - Responsive
+   =========================================== */
+@media (max-width: 480px) {
+  .language-selector {
+    margin-bottom: 16px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .language-label,
+  .layout-label {
+    font-size: 12px;
+  }
+
+  .language-options,
+  .layout-options {
+    gap: 6px;
+    width: 100%;
+  }
+
+  .language-btn,
+  .layout-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .layout-selector {
+    margin-bottom: 16px;
   }
 }

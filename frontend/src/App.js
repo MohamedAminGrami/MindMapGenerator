@@ -3,8 +3,13 @@ import { toPng } from 'html-to-image';
 import MindMap from './MindMap';
 import './App.css';
 
+// API URL from environment variable (defaults to localhost for development)
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 function App() {
   const [subject, setSubject] = useState('');
+  const [language, setLanguage] = useState('en');
+  const [layout, setLayout] = useState('horizontal'); // 'horizontal' or 'vertical'
   const [mindmapData, setMindmapData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -21,10 +26,10 @@ function App() {
     setError('');
     
     try {
-      const res = await fetch('http://localhost:5000/generate-mindmap', {
+      const res = await fetch(`${API_URL}/generate-mindmap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject })
+        body: JSON.stringify({ subject, language })
       });
       
       if (!res.ok) {
@@ -40,53 +45,63 @@ function App() {
     }
   };
 
+  /**
+   * Downloads the mind map as a PNG image.
+   * 
+   * Uses html-to-image (dom-to-image fork) which works by:
+   * 1. Serializing the DOM tree to an XML string
+   * 2. Inlining all computed CSS styles into the elements
+   * 3. Converting external resources (fonts, images) to data URLs
+   * 4. Creating an SVG with a <foreignObject> containing the HTML
+   * 5. Drawing that SVG to a canvas and exporting as PNG
+   * 
+   * This is NOT a pixel screenshot - it's a true DOM-to-SVG-to-Canvas render.
+   * Only captures the .mindmap-wrapper element (connections-svg, mindmap-bg, mindmap-layout).
+   */
   const downloadMindMap = async () => {
     if (!mindmapRef.current) return;
     
     setDownloading(true);
     try {
-      // Get the actual mindmap wrapper inside the display container
-      const displayElement = mindmapRef.current;
-      const mindmapWrapper = displayElement.querySelector('.mindmap-wrapper');
-      const element = mindmapWrapper || displayElement;
+      // Target ONLY the mindmap-wrapper div which contains:
+      // - connections-svg (SVG curved lines)
+      // - mindmap-bg (background decorations)
+      // - mindmap-layout (central node + branches + leaves)
+      const mindmapWrapper = mindmapRef.current.querySelector('.mindmap-wrapper');
       
-      // Store original styles
-      const originalOverflow = displayElement.style.overflow;
-      const originalWidth = displayElement.style.width;
-      const originalMinWidth = element.style.minWidth;
+      if (!mindmapWrapper) {
+        throw new Error('Mind map element not found');
+      }
       
-      // Temporarily adjust container to show full content
-      displayElement.style.overflow = 'visible';
-      displayElement.style.width = 'auto';
+      // Wait for any CSS animations to complete
+      await new Promise(resolve => setTimeout(resolve, 150));
       
-      // Wait for any animations to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Get the actual rendered dimensions of the mindmap
+      const rect = mindmapWrapper.getBoundingClientRect();
+      const width = Math.max(rect.width, mindmapWrapper.scrollWidth, 800);
+      const height = Math.max(rect.height, mindmapWrapper.scrollHeight, 500);
       
-      // Get the actual full dimensions
-      const fullWidth = Math.max(element.scrollWidth, element.offsetWidth, 1200);
-      const fullHeight = Math.max(element.scrollHeight, element.offsetHeight, 600);
-      
-      // Generate high-quality PNG with full dimensions
-      const dataUrl = await toPng(element, {
+      // Generate PNG using DOM serialization (not pixel capture)
+      // html-to-image serializes styles inline and renders via SVG foreignObject
+      const dataUrl = await toPng(mindmapWrapper, {
         quality: 1,
-        pixelRatio: 2,
-        backgroundColor: '#E0F2FE',
-        width: fullWidth,
-        height: fullHeight,
+        pixelRatio: 2, // 2x resolution for crisp output
+        backgroundColor: null, // Use the element's own background
+        width: width,
+        height: height,
         cacheBust: true,
+        // Filter function to include only the mindmap elements
+        filter: (node) => {
+          // Include all nodes within mindmap-wrapper
+          return true;
+        },
         style: {
+          // Ensure content isn't clipped during export
           overflow: 'visible',
-          width: fullWidth + 'px',
-          minWidth: fullWidth + 'px',
         }
       });
       
-      // Restore original styles
-      displayElement.style.overflow = originalOverflow;
-      displayElement.style.width = originalWidth;
-      element.style.minWidth = originalMinWidth;
-      
-      // Create download link
+      // Trigger download
       const link = document.createElement('a');
       link.download = `mindmap-${(mindmapData?.title || subject || 'export').replace(/[^a-zA-Z0-9]/g, '-')}.png`;
       link.href = dataUrl;
@@ -119,6 +134,50 @@ function App() {
         {/* Input Section */}
         <div className="input-section">
           <label className="input-label">What would you like to explore?</label>
+          
+          <div className="language-selector">
+            <label className="language-label">Output Language:</label>
+            <div className="language-options">
+              <button 
+                className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                onClick={() => setLanguage('en')}
+              >
+                English
+              </button>
+              <button 
+                className={`language-btn ${language === 'fr' ? 'active' : ''}`}
+                onClick={() => setLanguage('fr')}
+              >
+                Français
+              </button>
+              <button 
+                className={`language-btn ${language === 'ar' ? 'active' : ''}`}
+                onClick={() => setLanguage('ar')}
+              >
+                العربية
+              </button>
+            </div>
+          </div>
+
+          <div className="layout-selector">
+            <label className="layout-label">Layout:</label>
+            <div className="layout-options">
+              <button 
+                className={`layout-btn ${layout === 'horizontal' ? 'active' : ''}`}
+                onClick={() => setLayout('horizontal')}
+                title="Horizontal Layout"
+              >
+                ↔️ Horizontal
+              </button>
+              <button 
+                className={`layout-btn ${layout === 'vertical' ? 'active' : ''}`}
+                onClick={() => setLayout('vertical')}
+                title="Vertical Layout"
+              >
+                ↕️ Vertical
+              </button>
+            </div>
+          </div>
           
           <div className="input-container">
             <input
@@ -173,7 +232,7 @@ function App() {
               </button>
             </div>
             <div className="mindmap-display" ref={mindmapRef}>
-              <MindMap data={mindmapData} />
+              <MindMap data={mindmapData} layout={layout} />
             </div>
           </div>
         )}

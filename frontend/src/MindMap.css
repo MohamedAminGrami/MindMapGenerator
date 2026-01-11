@@ -6,13 +6,17 @@
   width: max-content;
   margin: 0 auto;
   padding: 50px 60px;
-  background: linear-gradient(180deg, #E0F2FE 0%, #F0F9FF 30%, #ECFDF5 70%, #F0FDF4 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
   border-radius: 24px;
   overflow: visible;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* SVG Connections Layer */
+/* SVG Connections Layer - z-index: 1 to appear behind nodes */
 .connections-svg {
   position: absolute;
   top: 0;
@@ -20,7 +24,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 5;
+  z-index: 1;
   overflow: visible;
 }
 
@@ -33,53 +37,53 @@
   bottom: 0;
   pointer-events: none;
   overflow: hidden;
+  border-radius: 24px;
 }
 
-.bg-circle {
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.15) 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
+}
+
+.bg-glow {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.4;
+  filter: blur(60px);
+  opacity: 0.5;
 }
 
-.bg-circle-1 {
+.bg-glow-1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 197, 253, 0.1) 100%);
+  top: -100px;
+  left: -100px;
+}
+
+.bg-glow-2 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(167, 243, 208, 0.1) 100%);
+  bottom: -80px;
+  right: -50px;
+}
+
+.bg-glow-3 {
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(147, 197, 253, 0.5) 0%, transparent 70%);
-  top: -50px;
-  left: -50px;
-}
-
-.bg-circle-2 {
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(167, 243, 208, 0.5) 0%, transparent 70%);
-  bottom: -30px;
-  right: 10%;
-}
-
-.bg-circle-3 {
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, rgba(253, 230, 138, 0.5) 0%, transparent 70%);
-  top: 30%;
-  right: -30px;
-}
-
-.bg-icon {
-  position: absolute;
-  font-size: 28px;
-  opacity: 0.15;
-  animation: float 6s ease-in-out infinite;
-}
-
-.bg-icon-1 { top: 10%; left: 5%; animation-delay: 0s; }
-.bg-icon-2 { top: 15%; right: 8%; animation-delay: 1.5s; }
-.bg-icon-3 { bottom: 20%; left: 8%; animation-delay: 3s; }
-.bg-icon-4 { bottom: 15%; right: 5%; animation-delay: 4.5s; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(5deg); }
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(196, 181, 253, 0.08) 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Main Layout */
@@ -161,7 +165,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 25px;
   min-width: 320px;
   justify-content: center;
 }
@@ -178,17 +182,25 @@
 
 /* Branch Row - Contains branch node and children */
 .branch-row {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 15px;
   animation: branchAppear 0.6s ease-out forwards;
 }
 
-.branch-row:nth-child(1) { animation-delay: 0.1s; }
-.branch-row:nth-child(2) { animation-delay: 0.2s; }
-.branch-row:nth-child(3) { animation-delay: 0.3s; }
-.branch-row:nth-child(4) { animation-delay: 0.4s; }
-.branch-row:nth-child(5) { animation-delay: 0.5s; }
+/* Animation delays for up to 10 branches */
+.branch-row:nth-child(1) { animation-delay: 0.05s; }
+.branch-row:nth-child(2) { animation-delay: 0.1s; }
+.branch-row:nth-child(3) { animation-delay: 0.15s; }
+.branch-row:nth-child(4) { animation-delay: 0.2s; }
+.branch-row:nth-child(5) { animation-delay: 0.25s; }
+.branch-row:nth-child(6) { animation-delay: 0.3s; }
+.branch-row:nth-child(7) { animation-delay: 0.35s; }
+.branch-row:nth-child(8) { animation-delay: 0.4s; }
+.branch-row:nth-child(9) { animation-delay: 0.45s; }
+.branch-row:nth-child(10) { animation-delay: 0.5s; }
 
 @keyframes branchAppear {
   from {
@@ -244,6 +256,8 @@
 
 /* Branch Node */
 .branch-node {
+  position: relative;
+  z-index: 10;
   padding: 12px 20px;
   border-radius: 25px;
   font-weight: 600;
@@ -273,12 +287,27 @@
   font-size: 1.2em;
 }
 
+.branch-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  object-fit: contain;
+}
+
+.branch-icon-right {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
 .branch-text {
   line-height: 1.2;
 }
 
 /* Leaf Node */
 .leaf-node {
+  position: relative;
+  z-index: 10;
   padding: 10px 16px;
   border-radius: 20px;
   font-size: 13px;
@@ -304,12 +333,33 @@
   font-size: 1.1em;
 }
 
+.leaf-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-right: 6px;
+  object-fit: contain;
+}
+
+.leaf-icon-right {
+  margin-right: 0;
+  margin-left: 6px;
+}
+
 .leaf-text {
   line-height: 1.2;
 }
 
-/* Responsive Design */
+/* ===========================================
+   Responsive Design - Tablet (1000px)
+   =========================================== */
 @media (max-width: 1000px) {
+  .mindmap-wrapper {
+    min-width: unset;
+    width: 100%;
+    padding: 40px 30px;
+  }
+
   .mindmap-layout {
     flex-direction: column;
     gap: 30px;
@@ -318,34 +368,26 @@
   .branches-side {
     max-width: 100%;
     width: 100%;
+    min-width: unset;
     align-items: center !important;
+    padding: 0 !important;
   }
-  
-  .branch {
-    flex-direction: column !important;
+
+  .branch-row,
+  .branch-row-left {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
-  
-  .main-arrow {
-    transform: rotate(90deg);
-  }
-  
-  .branch-left .main-arrow {
-    transform: rotate(-90deg);
-  }
-  
-  .leaf-nodes-container {
+
+  .children-column,
+  .children-column-left,
+  .children-column-right {
+    align-items: center !important;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 10px 0 0 0 !important;
-  }
-  
-  .leaf-node-wrapper {
-    flex-direction: column !important;
-  }
-  
-  .leaf-connector {
-    transform: rotate(90deg);
+    gap: 8px;
   }
   
   .central-node {
@@ -360,33 +402,260 @@
   .central-title {
     font-size: 13px;
   }
+
+  /* Hide SVG connections on mobile - layout changes break coordinates */
+  .connections-svg {
+    display: none;
+  }
 }
 
+/* ===========================================
+   Responsive Design - Mobile (600px)
+   =========================================== */
 @media (max-width: 600px) {
   .mindmap-wrapper {
-    padding: 30px 15px;
+    padding: 24px 16px;
+    min-height: 400px;
+    border-radius: 16px;
+  }
+
+  .mindmap-layout {
+    gap: 24px;
+    min-height: 350px;
+  }
+
+  .branches-side {
+    gap: 24px;
   }
   
   .branch-node {
-    padding: 10px 16px;
+    padding: 10px 14px;
     font-size: 13px;
+    border-radius: 20px;
+  }
+
+  .branch-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
   }
   
   .leaf-node {
-    padding: 6px 12px;
+    padding: 8px 12px;
     font-size: 11px;
+    height: auto;
+    min-height: 32px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .leaf-icon {
+    width: 14px;
+    height: 14px;
   }
   
   .central-node {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
+  }
+
+  .central-glow {
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
   }
   
   .central-icon {
-    font-size: 30px;
+    font-size: 28px;
+    margin-bottom: 4px;
   }
   
   .central-title {
-    font-size: 12px;
+    font-size: 11px;
+    padding: 0 8px;
+    max-width: 95px;
+  }
+
+  /* Background glows - smaller on mobile */
+  .bg-glow-1 {
+    width: 150px;
+    height: 150px;
+    top: -50px;
+    left: -50px;
+  }
+
+  .bg-glow-2 {
+    width: 120px;
+    height: 120px;
+    bottom: -40px;
+    right: -30px;
+  }
+
+  .bg-glow-3 {
+    width: 100px;
+    height: 100px;
   }
 }
+
+/* ===========================================
+   Responsive Design - Small Mobile (400px)
+   =========================================== */
+@media (max-width: 400px) {
+  .mindmap-wrapper {
+    padding: 20px 12px;
+  }
+
+  .branch-node {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .leaf-node {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .central-node {
+    width: 90px;
+    height: 90px;
+  }
+
+  .central-icon {
+    font-size: 24px;
+  }
+
+  .central-title {
+    font-size: 10px;
+    max-width: 75px;
+  }
+
+  .branches-side {
+    gap: 20px;
+  }
+
+  .children-column {
+    gap: 6px;
+  }
+}
+
+/* ===========================================
+   Vertical Layout Styles
+   =========================================== */
+
+/* Vertical wrapper adjustments */
+.mindmap-vertical {
+  min-width: 600px;
+  min-height: 800px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Vertical layout - column direction */
+.layout-vertical {
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Top branches container */
+.mindmap-vertical .branches-top {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  min-width: unset;
+  width: 100%;
+  padding: 0;
+}
+
+/* Bottom branches container */
+.mindmap-vertical .branches-bottom {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: unset;
+  width: 100%;
+  padding: 0;
+}
+
+/* Vertical branch row - stack vertically */
+.mindmap-vertical .branch-row {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mindmap-vertical .branch-row-top {
+  flex-direction: column-reverse;
+}
+
+.mindmap-vertical .branch-row-bottom {
+  flex-direction: column;
+}
+
+/* Vertical children column - horizontal */
+.mindmap-vertical .children-column {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.mindmap-vertical .children-column-top,
+.mindmap-vertical .children-column-bottom {
+  align-items: center;
+}
+
+/* Vertical layout animations */
+.mindmap-vertical .branch-row {
+  animation-name: branchAppearVertical;
+}
+
+.mindmap-vertical .branch-row-top {
+  animation-name: branchAppearVerticalTop;
+}
+
+@keyframes branchAppearVertical {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes branchAppearVerticalTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Vertical layout responsive */
+@media (max-width: 768px) {
+  .mindmap-vertical {
+    min-width: unset;
+    min-height: 600px;
+  }
+
+  .layout-vertical {
+    gap: 30px;
+  }
+
+  .mindmap-vertical .branches-top,
+  .mindmap-vertical .branches-bottom {
+    gap: 15px;
+  }
+}
+
