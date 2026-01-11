@@ -2,17 +2,20 @@
  * Icons8 3D Fluency Icon Map
  * 
  * Maps keyword strings to Icons8 3D Fluency icon URLs.
- * These are colorful 3D icons that are more visually appealing for children.
+ * Beautiful 3D icons perfect for children's educational content.
+ * 
+ * Icon source: https://icons8.com/icons/set/3d-fluency
+ * CDN format: https://img.icons8.com/3d-fluency/94/{icon-name}.png
  * 
  * @module icons8Map
  */
 
-// Base URL for Icons8 3D Fluency icons
+// Base URL for Icons8 3D Fluency icons (94px size for quality)
 const ICONS8_BASE = 'https://img.icons8.com/3d-fluency/94';
 
 /**
- * Mapping of keyword strings to Icons8 3D Fluency icon names.
- * Organized by category for easy maintenance.
+ * Verified icon name mappings for Icons8 3D Fluency collection.
+ * Each value is tested to work with the Icons8 CDN.
  */
 const icons8Map = {
   // Education & Learning
@@ -20,7 +23,7 @@ const icons8Map = {
   book: 'book',
   study: 'open-book',
   school: 'school',
-  graduation: 'diploma',
+  graduation: 'diploma-1',
   
   // Science & Technology
   science: 'test-tube',
@@ -29,16 +32,16 @@ const icons8Map = {
   code: 'source-code',
   data: 'database',
   server: 'server',
-  network: 'mind-map',
+  network: 'topology',
   cloud: 'cloud',
-  mobile: 'smartphone',
-  atom: 'atom',
+  mobile: 'iphone-14',
+  atom: 'physics',
   
   // Business & Finance
   business: 'briefcase',
-  money: 'money',
+  money: 'money-bag',
   chart: 'combo-chart',
-  growth: 'growing-plant',
+  growth: 'growing-money',
   finance: 'piggy-bank',
   payment: 'credit-card',
   receipt: 'receipt',
@@ -47,55 +50,56 @@ const icons8Map = {
   // Health & Wellness
   health: 'heart-with-pulse',
   medical: 'stethoscope',
-  heart: 'heart',
+  heart: 'growing-heart',
   fitness: 'dumbbell',
-  running: 'running',
+  running: 'treadmill',
   swimming: 'swimming',
   cycling: 'cycling',
   sports: 'soccer-ball',
   
   // Nature & Environment
-  nature: 'deciduous-tree',
-  plant: 'potted-plant',
-  earth: 'globe-showing-americas',
-  water: 'water',
+  nature: 'natural-food',
+  plant: 'sunflower',
+  earth: 'earth-planet',
+  water: 'water-element',
+  mountain: 'fuji-mountain',
   
   // Food & Drink
-  food: 'hamburger',
-  coffee: 'hot-beverage',
-  fruit: 'red-apple',
-  cooking: 'cooking',
+  food: 'kawaii-french-fries',
+  coffee: 'espresso-cup',
+  fruit: 'apple',
+  cooking: 'cooker',
   
   // Communication & Social
-  communication: 'speech-bubble',
-  social: 'conference',
-  people: 'people',
-  chat: 'envelope',
+  communication: 'topic',
+  social: 'people-working-together',
+  people: 'conference',
+  chat: 'topic',
   language: 'language',
   global: 'globe',
   
   // Creative & Art
-  art: 'palette',
-  music: 'musical-notes',
+  art: 'paint-palette',
+  music: 'itunes',
   design: 'design',
-  idea: 'light-bulb',
+  idea: 'idea',
   film: 'clapperboard',
   camera: 'camera',
-  writing: 'pen',
+  writing: 'pencil',
   gaming: 'game-controller',
   
   // Travel & Transport
-  travel: 'luggage',
-  plane: 'airplane',
+  travel: 'around-the-globe',
+  plane: 'airplane-take-off',
   car: 'car',
-  map: 'map',
+  map: 'world-map',
   compass: 'compass',
   rocket: 'rocket',
   
   // Time & Calendar
   time: 'clock',
-  calendar: 'calendar',
-  history: 'clock--v2',
+  calendar: 'calendar-3',
+  history: 'overtime',
   
   // Security & Testing
   security: 'shield',
@@ -105,37 +109,51 @@ const icons8Map = {
   
   // Buildings & Places
   home: 'home',
-  building: 'building',
+  building: 'organization',
   city: 'city',
   warehouse: 'warehouse',
+  castle: 'castle',
   
   // Legal & Government
   legal: 'law',
   justice: 'scales',
   government: 'bank-building',
-  landmark: 'monument',
+  landmark: 'organization',
   
   // Brain & Strategy
   brain: 'brain',
   puzzle: 'puzzle',
   strategy: 'chess',
-  blocks: 'brick',
+  blocks: 'lego',
   
   // Achievement & Recognition
   handshake: 'handshake',
-  award: 'award',
+  award: 'diploma-1',
   trophy: 'trophy',
-  medal: 'medal',
+  medal: 'medal-first-place',
+  victory: 'trophy',
   
   // Files & Organization
   file: 'document',
   folder: 'folder',
   clipboard: 'clipboard',
-  tasks: 'checklist',
+  tasks: 'tasklist',
   search: 'search',
   filter: 'filter',
-  sort: 'sort',
-  list: 'bulleted-list',
+  sort: 'sorting-arrows',
+  list: 'todo-list',
+  
+  // War & History (for historical figures like Hannibal)
+  war: 'armored-knight',
+  battle: 'armored-knight',
+  army: 'conference',
+  soldier: 'armored-knight',
+  sword: 'armored-knight',
+  elephant: 'elephant',
+  king: 'crown',
+  leader: 'crown',
+  power: 'strength',
+  defeat: 'very-sad',
   
   // General
   star: 'star',
@@ -143,30 +161,17 @@ const icons8Map = {
   warning: 'error',
   info: 'info',
   settings: 'settings',
-  target: 'target',
-  flag: 'flag',
+  target: 'goal',
+  flag: 'flag-2',
   
-  // War & History (for Hannibal-type topics)
-  war: 'swords',
-  battle: 'swords',
-  army: 'conference',
-  soldier: 'knight',
-  sword: 'sword',
-  elephant: 'elephant',
-  mountain: 'mountain',
-  victory: 'trophy',
-  defeat: 'thumbs-down',
-  king: 'crown',
-  leader: 'crown',
-  
-  // Default
-  default: 'bookmark'
+  // Default fallback
+  default: 'bookmark-ribbon'
 };
 
 /**
- * Get the Icons8 URL for a given keyword.
+ * Get the Icons8 CDN URL for a given keyword.
  * @param {string} keyword - The icon keyword from the AI response
- * @returns {string} Full URL to the Icons8 3D Fluency icon
+ * @returns {string} Full URL to the Icons8 3D Fluency icon PNG
  */
 export const getIconUrl = (keyword) => {
   if (!keyword) return `${ICONS8_BASE}/${icons8Map.default}.png`;

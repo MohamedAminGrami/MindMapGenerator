@@ -62,13 +62,94 @@ OUTPUT ONLY THIS JSON:
 });
 
 /**
+ * Get language-specific example for the prompt
+ * @param {string} language - Language code ('en', 'fr', 'ar')
+ * @returns {string} Example JSON in the target language
+ */
+const getLanguageExample = (language) => {
+  if (language === 'ar') {
+    return `REMEMBER: ZERO Latin letters allowed! Every name must be in Arabic script!
+
+CORRECT ARABIC EXAMPLE (notice ALL text is Arabic script, NO Latin):
+{
+  "title": "حنبعل برقا",
+  "nodes": [
+    {
+      "text": "العائلة",
+      "icon": "people",
+      "children": [
+        { "text": "ابن حملقار برقا", "icon": "people" },
+        { "text": "من قرطاج", "icon": "home" }
+      ]
+    },
+    {
+      "text": "المعارك",
+      "icon": "flag",
+      "children": [
+        { "text": "معركة كاناي", "icon": "map" }
+      ]
+    }
+  ]
+}`;
+  }
+  
+  if (language === 'fr') {
+    return `EXAMPLE IN FRENCH:
+{
+  "title": "Les Animaux",
+  "nodes": [
+    {
+      "text": "Les Mammifères",
+      "icon": "nature",
+      "children": [
+        { "text": "Le chien", "icon": "heart" },
+        { "text": "Le chat", "icon": "home" }
+      ]
+    },
+    {
+      "text": "Les Oiseaux",
+      "icon": "nature",
+      "children": [
+        { "text": "L'aigle", "icon": "travel" }
+      ]
+    }
+  ]
+}`;
+  }
+  
+  // Default: English
+  return `EXAMPLE IN ENGLISH:
+{
+  "title": "Animals",
+  "nodes": [
+    {
+      "text": "Mammals",
+      "icon": "nature",
+      "children": [
+        { "text": "Dogs", "icon": "heart" },
+        { "text": "Cats", "icon": "home" }
+      ]
+    },
+    {
+      "text": "Birds",
+      "icon": "nature",
+      "children": [
+        { "text": "Eagles", "icon": "travel" }
+      ]
+    }
+  ]
+}`;
+};
+
+/**
  * Generate topic/knowledge mind map prompt
  * @param {string} subject - The topic to explore
  * @param {string} languageInstruction - Language-specific instruction
  * @param {string} iconsList - Comma-separated list of available icons
+ * @param {string} language - Language code ('en', 'fr', 'ar')
  * @returns {object} API message configuration
  */
-const buildTopicPrompt = (subject, languageInstruction, iconsList) => ({
+const buildTopicPrompt = (subject, languageInstruction, iconsList, language = 'en') => ({
   model: 'llama-3.3-70b-versatile',
   max_tokens: 3000,
   response_format: { type: "json_object" },
@@ -101,41 +182,9 @@ RULES:
       role: 'user',
       content: `Generate a child-friendly mind map for: "${subject}"
 
-REMEMBER: ZERO Latin letters allowed! Every name must be in Arabic script!
-
 ${languageInstruction}
 
-CORRECT ARABIC EXAMPLE (notice ALL text is Arabic script, NO Latin):
-{
-  "title": "حنبعل برقا",
-  "nodes": [
-    {
-      "text": "العائلة",
-      "icon": "people",
-      "children": [
-        { "text": "ابن حملقار برقا", "icon": "people" },
-        { "text": "من قرطاج", "icon": "home" }
-      ]
-    },
-    {
-      "text": "المعارك",
-      "icon": "flag",
-      "children": [
-        { "text": "معركة كاناي", "icon": "map" },
-        { "text": "معركة تريبيا", "icon": "map" },
-        { "text": "عبور جبال الألب", "icon": "earth" }
-      ]
-    },
-    {
-      "text": "الحرب مع روما",
-      "icon": "history",
-      "children": [
-        { "text": "الحرب البونيقية الثانية", "icon": "history" },
-        { "text": "هزيمة الرومان", "icon": "trophy" }
-      ]
-    }
-  ]
-}
+${getLanguageExample(language)}
 
 OUTPUT ONLY VALID JSON:`
     }

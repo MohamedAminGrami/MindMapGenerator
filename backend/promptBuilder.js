@@ -56,8 +56,8 @@ function buildMindMapPrompt(subject, language = 'en') {
     return buildVerbPrompt(cleaned, languageInstruction);
   }
   
-  // TOPIC/KNOWLEDGE MODE (default)
-  return buildTopicPrompt(subject, languageInstruction, getIconsList());
+  // TOPIC/KNOWLEDGE MODE (default) - pass language for correct example
+  return buildTopicPrompt(subject, languageInstruction, getIconsList(), language);
 }
 
 module.exports = {

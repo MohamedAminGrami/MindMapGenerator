@@ -28,7 +28,7 @@ import { getIconUrl } from './icons8Map';
  */
 const NodeIcon = ({ iconName, className }) => {
   const iconUrl = getIconUrl(iconName);
-  return <img src={iconUrl} alt="" className={className} />;
+  return <img src={iconUrl} alt="" className={className} loading="lazy" />;
 };
 
 /**
@@ -109,20 +109,22 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
   const renderBranch = (node, index, side) => {
     const color = getBranchColor(node.colorIndex);
     const children = node.children || [];
+    const isRightSide = side === 'right' || side === 'bottom';
     
     return (
       <div key={index} className={`branch-row branch-row-${side}`}>
         {/* Branch Node */}
         <div 
-          className="branch-node"
+          className={`branch-node ${isRightSide ? 'branch-node-right' : ''}`}
           data-color-index={node.colorIndex}
           style={{ 
             backgroundColor: color.bg,
             borderColor: color.border,
           }}
         >
-          <NodeIcon iconName={node.icon} className="branch-icon" />
+          {!isRightSide && <NodeIcon iconName={node.icon} className="branch-icon" />}
           <span className="branch-text">{node.text || node.label}</span>
+          {isRightSide && <NodeIcon iconName={node.icon} className="branch-icon branch-icon-right" />}
         </div>
         
         {/* Children nodes */}
@@ -131,14 +133,15 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
             {children.map((child, childIdx) => (
               <div 
                 key={childIdx}
-                className="leaf-node"
+                className={`leaf-node ${isRightSide ? 'leaf-node-right' : ''}`}
                 style={{ 
                   backgroundColor: color.light,
                   borderColor: color.bg,
                 }}
               >
-                <NodeIcon iconName={child.icon} className="leaf-icon" />
+                {!isRightSide && <NodeIcon iconName={child.icon} className="leaf-icon" />}
                 <span className="leaf-text">{child.text || child.label}</span>
+                {isRightSide && <NodeIcon iconName={child.icon} className="leaf-icon leaf-icon-right" />}
               </div>
             ))}
           </div>

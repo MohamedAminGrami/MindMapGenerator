@@ -32,8 +32,11 @@ import {
   FaBrain, FaPuzzlePiece, FaChess, FaCubes,
   FaHandshake, FaAward, FaTrophy, FaMedal,
   FaFileAlt, FaFolder, FaClipboard, FaTasks,
-  FaSearch, FaFilter, FaSort, FaList
+  FaSearch, FaFilter, FaSort, FaList,
+  FaFistRaised, FaCrown, FaMountain, FaSkull, FaThumbsDown, FaThumbsUp
 } from 'react-icons/fa';
+
+import { GiElephant, GiSwordman, GiCrossedSwords, GiCastle } from 'react-icons/gi';
 
 /**
  * Mapping of keyword strings to Font Awesome icon components.
@@ -170,6 +173,22 @@ const iconMap = {
   settings: FaCog,
   target: FaBullseye,
   flag: FaFlag,
+  
+  // War & History
+  war: GiCrossedSwords,
+  battle: GiCrossedSwords,
+  army: FaUsers,
+  soldier: GiSwordman,
+  sword: GiCrossedSwords,
+  elephant: GiElephant,
+  mountain: FaMountain,
+  victory: FaTrophy,
+  defeat: FaThumbsDown,
+  king: FaCrown,
+  leader: FaCrown,
+  castle: GiCastle,
+  power: FaFistRaised,
+  
   default: FaBookmark
 };
 
