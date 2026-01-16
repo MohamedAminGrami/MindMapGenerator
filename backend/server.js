@@ -27,6 +27,84 @@ const PORT = process.env.PORT || 5000;
  * @body {string} language - Output language ('en', 'fr', 'ar')
  * @returns {object} mindmapData - Structured mind map JSON
  */
+/**
+ * POST /extract-mindmap
+ * Accepts extracted text from a file and generates a mindmap JSON using Groq API.
+ * @body {string} text - Extracted text from file
+ * @returns {object} mindmapData - Structured mind map JSON
+ */
+app.post('/extract-mindmap', async (req, res) => {
+    const { text } = req.body;
+    try {
+        // Build a prompt for the AI to convert text into mindmap JSON
+        const promptConfig = {
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are an expert at extracting mindmap structures from text documents. Given any text, you will output a valid JSON object with a title and nodes array, matching the format: { "title": "...", "nodes": [ { "label": "...", "icon": "...", "children": [ { "label": "...", "icon": "..." } ] } ] }.'
+                },
+                {
+                    role: 'user',
+                    content: `Extract a mindmap from the following text and return only valid JSON:\n${text}`
+                }
+            ],
+            temperature: 0.2,
+            max_tokens: 2048
+        };
+
+        // Call Groq API
+        const response = await axios.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            promptConfig,
+            {
+                headers: {
+                    'Authorization': `Bearer ${GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        let content = response.data.choices[0].message.content;
+        if (typeof content === 'string') {
+            content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        }
+        let aiJson;
+        try {
+            aiJson = JSON.parse(content);
+        } catch (parseError) {
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                try {
+                    aiJson = JSON.parse(jsonMatch[0]);
+                } catch (extractError) {
+                    let fixedContent = jsonMatch[0]
+                        .replace(/[\r\n]+/g, ' ')
+                        .replace(/,\s*}/g, '}')
+                        .replace(/,\s*]/g, ']');
+                    try {
+                        aiJson = JSON.parse(fixedContent);
+                    } catch (retryError) {
+                        throw new Error('Invalid JSON response from AI');
+                    }
+                }
+            } else {
+                throw new Error('Invalid JSON response from AI');
+            }
+        }
+        if (!aiJson || typeof aiJson !== 'object') {
+            throw new Error('Invalid JSON response from AI');
+        }
+        if (!aiJson.title || typeof aiJson.title !== 'string') {
+            aiJson.title = 'Mind Map';
+        }
+        res.json({ mindmapData: aiJson });
+    } catch (error) {
+        console.error('Error:', error.response?.data || error.message);
+        res.status(500).json({ error: error.response?.data || error.message });
+    }
+});
+
 app.post('/generate-mindmap', async (req, res) => {
     const { subject, language } = req.body;
 

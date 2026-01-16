@@ -5,16 +5,17 @@
  * Supports both horizontal and vertical layouts.
  */
 
-import { getBranchColor } from '../constants';
+import { getBranchColor, BRANCH_COLORS } from '../constants';
 
 /**
  * Calculate connection data for all branches in the mind map
  * 
  * @param {HTMLElement} container - The mindmap container element
  * @param {HTMLElement} center - The central node element
+ * @param {Array} palette - Optional color palette to use for connections
  * @returns {Object} Object containing connections array and svg size
  */
-export const calculateConnections = (container, center) => {
+export const calculateConnections = (container, center, palette = BRANCH_COLORS) => {
   if (!container || !center) return { connections: [], svgSize: { width: 0, height: 0 } };
 
   const containerRect = container.getBoundingClientRect();
@@ -45,7 +46,7 @@ export const calculateConnections = (container, center) => {
     if (branchNode) {
       const branchRect = branchNode.getBoundingClientRect();
       const colorIndex = parseInt(branchNode.dataset.colorIndex || '0');
-      const color = getBranchColor(colorIndex);
+      const color = getBranchColor(colorIndex, palette);
 
       if (isVerticalLayout) {
         // VERTICAL LAYOUT: connections go up/down

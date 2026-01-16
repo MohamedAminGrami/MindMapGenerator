@@ -15,7 +15,7 @@ import React, { useMemo, useRef, useLayoutEffect, useState } from 'react';
 import './MindMap.css';
 
 // Import from modular files
-import { getBranchColor } from './constants';
+import { getBranchColor, BRANCH_COLORS, lightenColor, darkenColor } from './constants';
 import { calculateConnections, generatePathD } from './utils';
 import { getIconUrl } from './icons8Map';
 
@@ -40,13 +40,25 @@ const NodeIcon = ({ iconName, className }) => {
  * @param {string} data.title - Central topic title
  * @param {Array} data.nodes - Array of branch nodes with children
  * @param {string} layout - 'horizontal' or 'vertical'
+ * @param {Array} palette - Optional custom color palette array
  */
-const MindMap = ({ data, layout = 'horizontal' }) => {
+const MindMap = ({ data, layout = 'horizontal', palette = BRANCH_COLORS }) => {
   const containerRef = useRef(null);
   const centerRef = useRef(null);
   const [connections, setConnections] = useState([]);
   const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
   const isVertical = layout === 'vertical';
+
+  // Compute central node colors from the first color in the palette
+  const centralColor = useMemo(() => {
+    const baseColor = palette[0]?.bg || '#3B82F6';
+    return {
+      main: baseColor,
+      light: lightenColor(baseColor, 30),
+      dark: darkenColor(baseColor, 20),
+      glow: baseColor.replace('#', ''),
+    };
+  }, [palette]);
   
   /**
    * Process and distribute nodes between left/right or top/bottom sides.
@@ -74,13 +86,13 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
   /**
    * Calculate SVG connection paths between nodes.
    * Uses useLayoutEffect to measure DOM positions after render.
-   * Recalculates on window resize.
+   * Recalculates on window resize and palette change.
    */
   useLayoutEffect(() => {
     if (!containerRef.current || !centerRef.current || !processedData) return;
 
     const updateConnections = () => {
-      const result = calculateConnections(containerRef.current, centerRef.current);
+      const result = calculateConnections(containerRef.current, centerRef.current, palette);
       setConnections(result.connections);
       setSvgSize(result.svgSize);
     };
@@ -95,7 +107,7 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateConnections);
     };
-  }, [processedData, isVertical]);
+  }, [processedData, isVertical, palette]);
 
   if (!processedData) return null;
 
@@ -107,7 +119,7 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
    * @param {string} side - 'left', 'right', 'top', or 'bottom' positioning
    */
   const renderBranch = (node, index, side) => {
-    const color = getBranchColor(node.colorIndex);
+    const color = getBranchColor(node.colorIndex, palette);
     const children = node.children || [];
     const isRightSide = side === 'right' || side === 'bottom';
     
@@ -190,8 +202,19 @@ const MindMap = ({ data, layout = 'horizontal' }) => {
         {/* Central Node */}
         <div className="central-node-wrapper" ref={centerRef}>
           <div className="central-node">
-            <div className="central-glow"></div>
-            <div className="central-content">
+            <div 
+              className="central-glow"
+              style={{
+                background: `radial-gradient(circle, ${centralColor.main}4D 0%, transparent 70%)`
+              }}
+            ></div>
+            <div 
+              className="central-content"
+              style={{
+                background: `linear-gradient(135deg, ${centralColor.light} 0%, ${centralColor.main} 50%, ${centralColor.dark} 100%)`,
+                boxShadow: `0 10px 40px ${centralColor.main}66, 0 0 0 6px rgba(255, 255, 255, 0.8), inset 0 -5px 20px rgba(0, 0, 0, 0.1)`
+              }}
+            >
               <span className="central-icon">🧠</span>
               <span className="central-title">{processedData.title}</span>
             </div>

@@ -1,0 +1,644 @@
+/**
+ * ManualMindMapCreator Styles
+ * 
+ * Matches the application's glass-morphism dark theme
+ */
+
+/* ============================================
+   Trigger Button
+   ============================================ */
+.manual-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+
+.manual-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
+}
+
+.manual-create-btn svg {
+  font-size: 16px;
+}
+
+/* ============================================
+   Modal Overlay
+   ============================================ */
+.manual-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================
+   Modal Container
+   ============================================ */
+.manual-modal {
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Modal Header
+   ============================================ */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.modal-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.modal-header h2 svg {
+  color: #a5b4fc;
+}
+
+.close-modal-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  color: #fca5a5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ============================================
+   Form
+   ============================================ */
+.manual-form {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.form-section {
+  padding: 20px 24px;
+}
+
+.section-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* Title Input */
+.title-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  color: #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.title-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.title-input::placeholder {
+  color: #64748b;
+}
+
+/* ============================================
+   Nodes Section
+   ============================================ */
+.nodes-section {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.add-node-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-node-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.nodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================================
+   Node Item
+   ============================================ */
+.node-item {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.node-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.node-number {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a5b4fc;
+  flex: 1;
+}
+
+.toggle-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(148, 163, 184, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background: rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+}
+
+.remove-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #fca5a5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.remove-btn.small {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+}
+
+.node-content {
+  padding: 16px;
+}
+
+.node-main-inputs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.node-text-input {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  font-size: 14px;
+  color: #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.node-text-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.node-text-input::placeholder {
+  color: #64748b;
+}
+
+/* ============================================
+   Icon Selector
+   ============================================ */
+.icon-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 4px 8px 4px 12px;
+}
+
+.icon-preview {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a5b4fc;
+  font-size: 16px;
+}
+
+.icon-selector select {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.icon-selector select:focus {
+  outline: none;
+}
+
+.icon-selector select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+/* ============================================
+   Children Section
+   ============================================ */
+.children-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.children-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.children-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.add-child-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 6px;
+  color: #6ee7b7;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-child-btn:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.children-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.no-children {
+  text-align: center;
+  padding: 16px;
+  color: #64748b;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ============================================
+   Child Item
+   ============================================ */
+.child-item {
+  background: rgba(15, 23, 42, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.child-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.child-text-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.child-text-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.child-text-input::placeholder {
+  color: #64748b;
+}
+
+/* ============================================
+   Form Error
+   ============================================ */
+.form-error {
+  margin: 0 24px;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #fca5a5;
+  font-size: 14px;
+}
+
+/* ============================================
+   Form Actions
+   ============================================ */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  background: rgba(15, 23, 42, 0.5);
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.cancel-btn {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #e2e8f0;
+}
+
+.reset-btn {
+  padding: 12px 24px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 10px;
+  color: #fcd34d;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  background: rgba(251, 191, 36, 0.2);
+}
+
+.submit-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+}
+
+/* ============================================
+   Responsive - Tablet
+   ============================================ */
+@media (max-width: 768px) {
+  .manual-modal {
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 18px;
+  }
+  
+  .form-section {
+    padding: 16px 20px;
+  }
+  
+  .node-main-inputs {
+    flex-direction: column;
+  }
+  
+  .child-inputs {
+    flex-wrap: wrap;
+  }
+  
+  .child-text-input {
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  .form-actions {
+    flex-wrap: wrap;
+    padding: 16px 20px;
+  }
+  
+  .cancel-btn,
+  .reset-btn {
+    flex: 1;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    order: -1;
+    margin-bottom: 8px;
+  }
+}
+
+/* ============================================
+   Responsive - Mobile
+   ============================================ */
+@media (max-width: 480px) {
+  .manual-modal-overlay {
+    padding: 10px;
+  }
+  
+  .manual-modal {
+    max-height: 95vh;
+    border-radius: 14px;
+  }
+  
+  .modal-header {
+    padding: 14px 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 16px;
+    gap: 8px;
+  }
+  
+  .form-section {
+    padding: 14px 16px;
+  }
+  
+  .section-label {
+    font-size: 12px;
+  }
+  
+  .title-input {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+  
+  .add-node-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .node-header {
+    padding: 10px 12px;
+  }
+  
+  .node-content {
+    padding: 12px;
+  }
+  
+  .form-actions {
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  
+  .cancel-btn,
+  .reset-btn,
+  .submit-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}

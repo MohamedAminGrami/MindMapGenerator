@@ -1,0 +1,474 @@
+/**
+ * FileMindMapUploader Styles
+ * 
+ * Matches the website's glass-morphism dark theme design
+ */
+
+/* ============================================
+   Main Container - Glass Card
+   ============================================ */
+.file-mindmap-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.file-mindmap-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.file-mindmap-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-mindmap-title svg {
+  color: #818cf8;
+}
+
+.file-mindmap-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* ============================================
+   Drop Area - Main Interactive Zone
+   ============================================ */
+.file-drop-area {
+  position: relative;
+  border: 2px dashed rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 16px;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 160px;
+  overflow: hidden;
+}
+
+.file-drop-area:hover:not(.loading) {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
+}
+
+.file-drop-area.drag-active {
+  border-color: #6366f1;
+  border-style: solid;
+  background: rgba(99, 102, 241, 0.12);
+  box-shadow: 
+    0 0 0 4px rgba(99, 102, 241, 0.1),
+    0 12px 32px rgba(99, 102, 241, 0.25);
+  transform: scale(1.01);
+}
+
+.file-drop-area.loading {
+  cursor: wait;
+  border-style: solid;
+  border-color: rgba(168, 85, 247, 0.4);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+}
+
+.file-drop-area.success {
+  border-color: rgba(16, 185, 129, 0.5);
+  border-style: solid;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.file-drop-area.has-error {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* ============================================
+   Drop Content
+   ============================================ */
+.file-drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 1;
+  transition: opacity 0.3s;
+}
+
+.file-drop-area.success .file-drop-content {
+  opacity: 0.2;
+}
+
+/* Icon Wrapper - Gradient Background */
+.file-drop-icon-wrapper {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #a5b4fc;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  transition: all 0.3s ease;
+}
+
+.file-drop-area:hover:not(.loading) .file-drop-icon-wrapper {
+  transform: scale(1.08);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+}
+
+.icon-pdf { color: #f87171; }
+.icon-word { color: #60a5fa; }
+.icon-image { color: #34d399; }
+
+/* Text Container */
+.file-drop-text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.main-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.sub-text {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Loading State */
+.loading-text {
+  font-size: 15px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  color: #a5b4fc;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   File Info Chip - When File Selected
+   ============================================ */
+.file-info-active {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
+  padding: 10px 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #c7d2fe;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clear-file-btn {
+  width: 24px;
+  height: 24px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-size: 10px;
+}
+
+.clear-file-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  transform: scale(1.1);
+}
+
+/* ============================================
+   Success Overlay
+   ============================================ */
+.success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  backdrop-filter: blur(8px);
+  color: #34d399;
+  font-size: 16px;
+  font-weight: 700;
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+  border-radius: 14px;
+}
+
+.success-overlay svg {
+  font-size: 28px;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================
+   Error Message
+   ============================================ */
+.file-error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  color: #fca5a5;
+  font-size: 14px;
+  font-weight: 500;
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+.file-error-message svg {
+  flex-shrink: 0;
+  color: #f87171;
+  font-size: 18px;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* ============================================
+   Supported Formats Badges
+   ============================================ */
+.supported-formats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.format-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  padding: 8px 14px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  transition: all 0.2s ease;
+}
+
+.format-badge:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.format-badge svg {
+  font-size: 14px;
+}
+
+.format-badge.pdf { color: #fca5a5; }
+.format-badge.pdf:hover { border-color: rgba(248, 113, 113, 0.3); }
+
+.format-badge.word { color: #93c5fd; }
+.format-badge.word:hover { border-color: rgba(96, 165, 250, 0.3); }
+
+.format-badge.image { color: #6ee7b7; }
+.format-badge.image:hover { border-color: rgba(52, 211, 153, 0.3); }
+
+/* ============================================
+   Responsive - Tablet
+   ============================================ */
+@media (max-width: 768px) {
+  .file-mindmap-uploader {
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .file-mindmap-title {
+    font-size: 13px;
+  }
+
+  .file-mindmap-desc {
+    font-size: 12px;
+  }
+
+  .file-drop-area {
+    padding: 32px 20px;
+    min-height: 140px;
+    border-radius: 14px;
+  }
+
+  .file-drop-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+    border-radius: 16px;
+  }
+
+  .main-text {
+    font-size: 15px;
+  }
+
+  .sub-text {
+    font-size: 12px;
+  }
+
+  .file-name {
+    max-width: 160px;
+  }
+
+  .supported-formats {
+    gap: 8px;
+  }
+
+  .format-badge {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+/* ============================================
+   Responsive - Mobile
+   ============================================ */
+@media (max-width: 480px) {
+  .file-mindmap-uploader {
+    gap: 14px;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .file-mindmap-title {
+    font-size: 12px;
+  }
+
+  .file-mindmap-desc {
+    font-size: 11px;
+  }
+
+  .file-drop-area {
+    padding: 28px 16px;
+    min-height: 130px;
+    border-radius: 12px;
+  }
+
+  .file-drop-content {
+    gap: 12px;
+  }
+
+  .file-drop-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+    border-radius: 14px;
+  }
+
+  .main-text {
+    font-size: 14px;
+  }
+
+  .sub-text {
+    font-size: 11px;
+  }
+
+  .file-info-active {
+    padding: 8px 14px;
+    gap: 10px;
+  }
+
+  .file-name {
+    max-width: 130px;
+    font-size: 13px;
+  }
+
+  .file-error-message {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .supported-formats {
+    gap: 6px;
+  }
+
+  .format-badge {
+    padding: 6px 10px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .format-badge svg {
+    font-size: 12px;
+  }
+}
+

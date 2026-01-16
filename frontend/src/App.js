@@ -1,6 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import MindMap from './MindMap';
+import ColorPaletteSelector from './components/ColorPaletteSelector';
+import FileMindMapUploader from './components/FileMindMapUploader';
+import ManualMindMapCreator from './components/ManualMindMapCreator';
+import { getPaletteById } from './constants/colors';
 import './App.css';
 
 // API URL from environment variable (defaults to localhost for development)
@@ -14,7 +18,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedPaletteId, setSelectedPaletteId] = useState('default');
+  const [customPalette, setCustomPalette] = useState(null);
   const mindmapRef = useRef(null);
+
+  // Get current palette colors
+  const currentPaletteColors = customPalette || getPaletteById(selectedPaletteId).colors;
 
   const generateMindMap = async () => {
     if (!subject.trim()) {
@@ -46,6 +55,69 @@ function App() {
   };
 
   /**
+   * Converts an external image URL to a base64 data URL.
+   * This is needed because html-to-image cannot access cross-origin images.
+   * 
+   * @param {string} url - External image URL
+   * @returns {Promise<string>} Base64 data URL or fallback
+   */
+  const convertImageToDataUrl = async (url) => {
+    try {
+      const response = await fetch(url, { mode: 'cors' });
+      const blob = await response.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => resolve(''); // Return empty on error
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return ''; // Return empty on fetch error
+    }
+  };
+
+  /**
+   * Pre-processes images in the mindmap wrapper to convert external URLs to data URLs.
+   * This prevents CORS errors during html-to-image export.
+   * 
+   * @param {HTMLElement} wrapper - The mindmap wrapper element
+   * @returns {Promise<Map>} Map of original src to data URL for restoration
+   */
+  const preProcessImages = async (wrapper) => {
+    const images = wrapper.querySelectorAll('img');
+    const originalSrcs = new Map();
+    
+    const promises = Array.from(images).map(async (img) => {
+      const src = img.src;
+      if (src && src.startsWith('http')) {
+        originalSrcs.set(img, src);
+        const dataUrl = await convertImageToDataUrl(src);
+        if (dataUrl) {
+          img.src = dataUrl;
+        } else {
+          // Hide image if conversion failed
+          img.style.visibility = 'hidden';
+        }
+      }
+    });
+    
+    await Promise.all(promises);
+    return originalSrcs;
+  };
+
+  /**
+   * Restores original image sources after export.
+   * 
+   * @param {Map} originalSrcs - Map of images to their original sources
+   */
+  const restoreImages = (originalSrcs) => {
+    originalSrcs.forEach((src, img) => {
+      img.src = src;
+      img.style.visibility = '';
+    });
+  };
+
+  /**
    * Downloads the mind map as a PNG image.
    * 
    * Uses html-to-image (dom-to-image fork) which works by:
@@ -62,19 +134,26 @@ function App() {
     if (!mindmapRef.current) return;
     
     setDownloading(true);
+    let originalSrcs = new Map();
+    let mindmapWrapper = null;
+    
     try {
       // Target ONLY the mindmap-wrapper div which contains:
       // - connections-svg (SVG curved lines)
       // - mindmap-bg (background decorations)
       // - mindmap-layout (central node + branches + leaves)
-      const mindmapWrapper = mindmapRef.current.querySelector('.mindmap-wrapper');
+      mindmapWrapper = mindmapRef.current.querySelector('.mindmap-wrapper');
       
       if (!mindmapWrapper) {
         throw new Error('Mind map element not found');
       }
       
+      // Pre-process: Convert external images to data URLs to avoid CORS errors
+      setError(''); // Clear any previous errors
+      originalSrcs = await preProcessImages(mindmapWrapper);
+      
       // Wait for any CSS animations to complete
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise(resolve => setTimeout(resolve, 200));
       
       // Get the actual rendered dimensions of the mindmap
       const rect = mindmapWrapper.getBoundingClientRect();
@@ -90,11 +169,9 @@ function App() {
         width: width,
         height: height,
         cacheBust: true,
-        // Filter function to include only the mindmap elements
-        filter: (node) => {
-          // Include all nodes within mindmap-wrapper
-          return true;
-        },
+        skipAutoScale: true,
+        // Provide a transparent placeholder for any remaining failed images
+        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
         style: {
           // Ensure content isn't clipped during export
           overflow: 'visible',
@@ -110,6 +187,10 @@ function App() {
       console.error('Failed to download mindmap:', err);
       setError('Failed to download mind map. Please try again.');
     } finally {
+      // Restore original image sources
+      if (originalSrcs.size > 0) {
+        restoreImages(originalSrcs);
+      }
       setDownloading(false);
     }
   };
@@ -123,11 +204,11 @@ function App() {
         {/* Header */}
         <div className="header">
           <div className="badge">
-            <span className="badge-text">✨ AI-Powered Visualization</span>
+            <span className="badge-text">✨ Visualization ✨</span>
           </div>
           <h1 className="title">Mind Map Generator</h1>
           <p className="subtitle">
-            Transform any topic into beautiful, interactive mind maps with AI intelligence
+            Transform any topic into beautiful, interactive mind maps
           </p>
         </div>
 
@@ -177,6 +258,23 @@ function App() {
                 ↕️ Vertical
               </button>
             </div>
+          </div>
+
+          {/* Color Palette Selector */}
+          <ColorPaletteSelector
+            selectedPaletteId={selectedPaletteId}
+            onPaletteChange={setSelectedPaletteId}
+            customPalette={customPalette}
+            onCustomPaletteChange={setCustomPalette}
+          />
+
+          {/* Alternative Creation Options */}
+          <div className="creation-options">
+            <FileMindMapUploader onMindMapData={setMindmapData} />
+            <div className="creation-divider">
+              <span>OR</span>
+            </div>
+            <ManualMindMapCreator onMindMapData={setMindmapData} />
           </div>
           
           <div className="input-container">
@@ -232,7 +330,7 @@ function App() {
               </button>
             </div>
             <div className="mindmap-display" ref={mindmapRef}>
-              <MindMap data={mindmapData} layout={layout} />
+              <MindMap data={mindmapData} layout={layout} palette={currentPaletteColors} />
             </div>
           </div>
         )}
