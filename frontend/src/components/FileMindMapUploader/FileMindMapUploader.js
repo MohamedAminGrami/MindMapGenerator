@@ -13,6 +13,7 @@ import './FileMindMapUploader.css';
 import { createWorker } from 'tesseract.js';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
+import { getApiUrl, ENDPOINTS } from '../../config/api';
 
 // Configure PDF.js worker - use unpkg CDN which has better compatibility
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -20,8 +21,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLi
 // CMap URL for proper Arabic/RTL character mapping in PDFs
 const CMAP_URL = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/cmaps/`;
 const STANDARD_FONT_URL = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/standard_fonts/`;
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const FileMindMapUploader = ({ onMindMapData }) => {
   const [file, setFile] = useState(null);
@@ -109,9 +108,13 @@ const FileMindMapUploader = ({ onMindMapData }) => {
         .map(item => {
           // Check direction for RTL text
           const text = item.str;
-          if (containsArabic(text)) hasArabicContent = true;
           return text;
         });
+      
+      // Check if any text in this page contains Arabic
+      if (pageTextItems.some(text => containsArabic(text))) {
+        hasArabicContent = true;
+      }
       
       const pageText = pageTextItems.join(' ');
       console.log(`Page ${i} extracted:`, pageText.substring(0, 100));
@@ -335,7 +338,7 @@ const FileMindMapUploader = ({ onMindMapData }) => {
       setLoadingStatus('Generating mind map...');
       
       // Send to backend for mindmap extraction
-      const res = await fetch(`${API_URL}/extract-mindmap`, {
+      const res = await fetch(getApiUrl(ENDPOINTS.EXTRACT_MINDMAP), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: extractedText })

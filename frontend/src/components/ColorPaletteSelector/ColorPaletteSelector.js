@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { COLOR_PALETTES, getAllPaletteIds, generateColorScheme } from '../constants/colors';
+import { COLOR_PALETTES, getAllPaletteIds, generateColorScheme } from '../../constants';
 import './ColorPaletteSelector.css';
 
 // Local storage key for custom palettes

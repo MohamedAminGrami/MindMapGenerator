@@ -15,9 +15,9 @@ import React, { useMemo, useRef, useLayoutEffect, useState } from 'react';
 import './MindMap.css';
 
 // Import from modular files
-import { getBranchColor, BRANCH_COLORS, lightenColor, darkenColor } from './constants';
-import { calculateConnections, generatePathD } from './utils';
-import { getIconUrl } from './icons8Map';
+import { getBranchColor, BRANCH_COLORS, lightenColor, darkenColor } from '../../constants';
+import { calculateConnections, generatePathD } from '../../utils';
+import { getIconUrl } from '../../constants';
 
 /**
  * NodeIcon Component

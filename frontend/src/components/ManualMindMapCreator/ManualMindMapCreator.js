@@ -5,11 +5,12 @@
  * Supports unlimited nodes and children with icon selection.
  */
 import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { 
   FaPlus, FaTimes, FaTrash, FaMagic, FaChevronDown, FaChevronUp,
-  FaSitemap, FaBookmark
+  FaSitemap,
 } from 'react-icons/fa';
-import { getIcon } from '../iconMap';
+import { getIcon } from '../../constants';
 import './ManualMindMapCreator.css';
 
 // Available icons for selection

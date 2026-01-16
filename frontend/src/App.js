@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { toPng } from 'html-to-image';
-import MindMap from './MindMap';
+import MindMap from './components/MindMap';
 import ColorPaletteSelector from './components/ColorPaletteSelector';
 import FileMindMapUploader from './components/FileMindMapUploader';
 import ManualMindMapCreator from './components/ManualMindMapCreator';
-import { getPaletteById } from './constants/colors';
+import { getPaletteById } from './constants';
+import { API_URL } from './config';
+import { downloadMindMap } from './utils';
+import { generateSafeFilename } from './utils';
 import './App.css';
-
-// API URL from environment variable (defaults to localhost for development)
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 function App() {
   const [subject, setSubject] = useState('');
@@ -30,21 +29,21 @@ function App() {
       setError('Please enter a subject');
       return;
     }
-    
+      
     setLoading(true);
     setError('');
-    
+      
     try {
       const res = await fetch(`${API_URL}/generate-mindmap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subject, language })
       });
-      
+        
       if (!res.ok) {
         throw new Error('Failed to generate mind map');
       }
-      
+        
       const data = await res.json();
       setMindmapData(data.mindmapData);
     } catch (err) {
@@ -52,69 +51,6 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
-
-  /**
-   * Converts an external image URL to a base64 data URL.
-   * This is needed because html-to-image cannot access cross-origin images.
-   * 
-   * @param {string} url - External image URL
-   * @returns {Promise<string>} Base64 data URL or fallback
-   */
-  const convertImageToDataUrl = async (url) => {
-    try {
-      const response = await fetch(url, { mode: 'cors' });
-      const blob = await response.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = () => resolve(''); // Return empty on error
-        reader.readAsDataURL(blob);
-      });
-    } catch {
-      return ''; // Return empty on fetch error
-    }
-  };
-
-  /**
-   * Pre-processes images in the mindmap wrapper to convert external URLs to data URLs.
-   * This prevents CORS errors during html-to-image export.
-   * 
-   * @param {HTMLElement} wrapper - The mindmap wrapper element
-   * @returns {Promise<Map>} Map of original src to data URL for restoration
-   */
-  const preProcessImages = async (wrapper) => {
-    const images = wrapper.querySelectorAll('img');
-    const originalSrcs = new Map();
-    
-    const promises = Array.from(images).map(async (img) => {
-      const src = img.src;
-      if (src && src.startsWith('http')) {
-        originalSrcs.set(img, src);
-        const dataUrl = await convertImageToDataUrl(src);
-        if (dataUrl) {
-          img.src = dataUrl;
-        } else {
-          // Hide image if conversion failed
-          img.style.visibility = 'hidden';
-        }
-      }
-    });
-    
-    await Promise.all(promises);
-    return originalSrcs;
-  };
-
-  /**
-   * Restores original image sources after export.
-   * 
-   * @param {Map} originalSrcs - Map of images to their original sources
-   */
-  const restoreImages = (originalSrcs) => {
-    originalSrcs.forEach((src, img) => {
-      img.src = src;
-      img.style.visibility = '';
-    });
   };
 
   /**
@@ -130,67 +66,22 @@ function App() {
    * This is NOT a pixel screenshot - it's a true DOM-to-SVG-to-Canvas render.
    * Only captures the .mindmap-wrapper element (connections-svg, mindmap-bg, mindmap-layout).
    */
-  const downloadMindMap = async () => {
+  const handleDownloadMindMap = async () => {
     if (!mindmapRef.current) return;
     
     setDownloading(true);
-    let originalSrcs = new Map();
-    let mindmapWrapper = null;
     
     try {
-      // Target ONLY the mindmap-wrapper div which contains:
-      // - connections-svg (SVG curved lines)
-      // - mindmap-bg (background decorations)
-      // - mindmap-layout (central node + branches + leaves)
-      mindmapWrapper = mindmapRef.current.querySelector('.mindmap-wrapper');
+      // Use the utility function to handle the download
+      const success = await downloadMindMap(mindmapRef, mindmapData, subject, setError, generateSafeFilename);
       
-      if (!mindmapWrapper) {
-        throw new Error('Mind map element not found');
+      if (!success) {
+        setError('Failed to download mind map. Please try again.');
       }
-      
-      // Pre-process: Convert external images to data URLs to avoid CORS errors
-      setError(''); // Clear any previous errors
-      originalSrcs = await preProcessImages(mindmapWrapper);
-      
-      // Wait for any CSS animations to complete
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Get the actual rendered dimensions of the mindmap
-      const rect = mindmapWrapper.getBoundingClientRect();
-      const width = Math.max(rect.width, mindmapWrapper.scrollWidth, 800);
-      const height = Math.max(rect.height, mindmapWrapper.scrollHeight, 500);
-      
-      // Generate PNG using DOM serialization (not pixel capture)
-      // html-to-image serializes styles inline and renders via SVG foreignObject
-      const dataUrl = await toPng(mindmapWrapper, {
-        quality: 1,
-        pixelRatio: 2, // 2x resolution for crisp output
-        backgroundColor: null, // Use the element's own background
-        width: width,
-        height: height,
-        cacheBust: true,
-        skipAutoScale: true,
-        // Provide a transparent placeholder for any remaining failed images
-        imagePlaceholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-        style: {
-          // Ensure content isn't clipped during export
-          overflow: 'visible',
-        }
-      });
-      
-      // Trigger download
-      const link = document.createElement('a');
-      link.download = `mindmap-${(mindmapData?.title || subject || 'export').replace(/[^a-zA-Z0-9]/g, '-')}.png`;
-      link.href = dataUrl;
-      link.click();
     } catch (err) {
       console.error('Failed to download mindmap:', err);
       setError('Failed to download mind map. Please try again.');
     } finally {
-      // Restore original image sources
-      if (originalSrcs.size > 0) {
-        restoreImages(originalSrcs);
-      }
       setDownloading(false);
     }
   };
@@ -318,7 +209,7 @@ function App() {
             <div className="mindmap-header">
               <h2 className="mindmap-title">{mindmapData.title || subject}</h2>
               <button
-                onClick={downloadMindMap}
+                onClick={handleDownloadMindMap}
                 disabled={downloading}
                 className="download-button"
               >

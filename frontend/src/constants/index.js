@@ -14,3 +14,10 @@ export {
   lightenColor,
   darkenColor
 } from './colors';
+
+export { 
+  getIcon,
+  getIconUrl,
+  getAvailableFontAwesomeIcons,
+  getAvailableIcons8Icons
+} from './icons';
