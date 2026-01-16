@@ -86,6 +86,10 @@ code {
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
 /* Header Section */
@@ -224,7 +228,7 @@ code {
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-/* Mind Map Display */
+/* Mind Map Container */
 .mindmap-container {
   background-color: rgba(30, 41, 59, 0.8);
   backdrop-filter: blur(20px);
@@ -233,6 +237,15 @@ code {
   padding: 48px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.5s ease-in;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mind Map with Controls Layout */
+.mindmap-with-controls {
+  display: flex;
+  gap: 20px;
+  width: 100%;
 }
 
 .mindmap-header {
@@ -285,7 +298,8 @@ code {
   border-radius: 16px;
   padding: 28px;
   min-height: 500px;
-  display: block;
+  flex: 1;
+  min-width: 0;
   border: 1px solid rgba(148, 163, 184, 0.22);
   overflow-x: auto;
   overflow-y: visible;

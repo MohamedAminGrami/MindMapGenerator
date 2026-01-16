@@ -131,9 +131,31 @@
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
+/* Controls Panel */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 280px;
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
 /* ===========================================
    Language & Layout Selector - Responsive
    =========================================== */
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .controls-panel {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+}
+
 @media (max-width: 480px) {
   .language-selector {
     margin-bottom: 16px;
@@ -161,5 +183,9 @@
 
   .layout-selector {
     margin-bottom: 16px;
+  }
+  
+  .creation-options {
+    flex-direction: column;
   }
 }

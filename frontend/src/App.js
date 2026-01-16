@@ -103,63 +103,10 @@ function App() {
           </p>
         </div>
 
-        {/* Input Section */}
+        {/* Creation Options First */}
         <div className="input-section">
-          <label className="input-label">What would you like to explore?</label>
+          <label className="input-label">How would you like to create your mind map?</label>
           
-          <div className="language-selector">
-            <label className="language-label">Output Language:</label>
-            <div className="language-options">
-              <button 
-                className={`language-btn ${language === 'en' ? 'active' : ''}`}
-                onClick={() => setLanguage('en')}
-              >
-                English
-              </button>
-              <button 
-                className={`language-btn ${language === 'fr' ? 'active' : ''}`}
-                onClick={() => setLanguage('fr')}
-              >
-                Français
-              </button>
-              <button 
-                className={`language-btn ${language === 'ar' ? 'active' : ''}`}
-                onClick={() => setLanguage('ar')}
-              >
-                العربية
-              </button>
-            </div>
-          </div>
-
-          <div className="layout-selector">
-            <label className="layout-label">Layout:</label>
-            <div className="layout-options">
-              <button 
-                className={`layout-btn ${layout === 'horizontal' ? 'active' : ''}`}
-                onClick={() => setLayout('horizontal')}
-                title="Horizontal Layout"
-              >
-                ↔️ Horizontal
-              </button>
-              <button 
-                className={`layout-btn ${layout === 'vertical' ? 'active' : ''}`}
-                onClick={() => setLayout('vertical')}
-                title="Vertical Layout"
-              >
-                ↕️ Vertical
-              </button>
-            </div>
-          </div>
-
-          {/* Color Palette Selector */}
-          <ColorPaletteSelector
-            selectedPaletteId={selectedPaletteId}
-            onPaletteChange={setSelectedPaletteId}
-            customPalette={customPalette}
-            onCustomPaletteChange={setCustomPalette}
-          />
-
-          {/* Alternative Creation Options */}
           <div className="creation-options">
             <FileMindMapUploader onMindMapData={setMindmapData} />
             <div className="creation-divider">
@@ -168,7 +115,12 @@ function App() {
             <ManualMindMapCreator onMindMapData={setMindmapData} />
           </div>
           
-          <div className="input-container">
+          <div className="creation-divider">
+            <span>OR</span>
+          </div>
+          
+          {/* Topic Input with Language Selector */}
+          <div className="topic-input-container">
             <input
               type="text"
               placeholder="Enter a topic... (e.g., Quantum Physics, Ancient Rome, Machine Learning)"
@@ -178,6 +130,32 @@ function App() {
               disabled={loading}
               className="input-field"
             />
+            
+            {/* Language Selector Inline */}
+            <div className="inline-language-selector">
+              <label className="language-label">Language:</label>
+              <div className="language-options">
+                <button 
+                  className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                  onClick={() => setLanguage('en')}
+                >
+                  EN
+                </button>
+                <button 
+                  className={`language-btn ${language === 'fr' ? 'active' : ''}`}
+                  onClick={() => setLanguage('fr')}
+                >
+                  FR
+                </button>
+                <button 
+                  className={`language-btn ${language === 'ar' ? 'active' : ''}`}
+                  onClick={() => setLanguage('ar')}
+                >
+                  AR
+                </button>
+              </div>
+            </div>
+            
             <button
               onClick={generateMindMap}
               disabled={loading}
@@ -203,25 +181,82 @@ function App() {
           </div>
         )}
 
-        {/* Mind Map Display */}
+        {/* Mind Map Display with Controls */}
         {mindmapData && (
-          <div className="mindmap-container">
-            <div className="mindmap-header">
-              <h2 className="mindmap-title">{mindmapData.title || subject}</h2>
-              <button
-                onClick={handleDownloadMindMap}
-                disabled={downloading}
-                className="download-button"
-              >
-                {downloading ? (
-                  <span>⏳ Downloading...</span>
-                ) : (
-                  <span>📥 Download PNG</span>
-                )}
-              </button>
+          <div className="mindmap-with-controls">
+            <div className="mindmap-container">
+              <div className="mindmap-header">
+                <h2 className="mindmap-title">{mindmapData.title || subject}</h2>
+                <button
+                  onClick={handleDownloadMindMap}
+                  disabled={downloading}
+                  className="download-button"
+                >
+                  {downloading ? (
+                    <span>⏳ Downloading...</span>
+                  ) : (
+                    <span>📥 Download PNG</span>
+                  )}
+                </button>
+              </div>
+              <div className="mindmap-display" ref={mindmapRef}>
+                <MindMap data={mindmapData} layout={layout} palette={currentPaletteColors} />
+              </div>
             </div>
-            <div className="mindmap-display" ref={mindmapRef}>
-              <MindMap data={mindmapData} layout={layout} palette={currentPaletteColors} />
+            
+            {/* Side Panel for Controls - Appears next to mindmap */}
+            <div className="controls-panel">
+              <div className="language-selector">
+                <label className="language-label">Output Language:</label>
+                <div className="language-options">
+                  <button 
+                    className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                    onClick={() => setLanguage('en')}
+                  >
+                    English
+                  </button>
+                  <button 
+                    className={`language-btn ${language === 'fr' ? 'active' : ''}`}
+                    onClick={() => setLanguage('fr')}
+                  >
+                    Français
+                  </button>
+                  <button 
+                    className={`language-btn ${language === 'ar' ? 'active' : ''}`}
+                    onClick={() => setLanguage('ar')}
+                  >
+                    العربية
+                  </button>
+                </div>
+              </div>
+
+              <div className="layout-selector">
+                <label className="layout-label">Layout:</label>
+                <div className="layout-options">
+                  <button 
+                    className={`layout-btn ${layout === 'horizontal' ? 'active' : ''}`}
+                    onClick={() => setLayout('horizontal')}
+                    title="Horizontal Layout"
+                  >
+                    ↔️ Horizontal
+                  </button>
+                  <button 
+                    className={`layout-btn ${layout === 'vertical' ? 'active' : ''}`}
+                    onClick={() => setLayout('vertical')}
+                    title="Vertical Layout"
+                  >
+                    ↕️ Vertical
+                  </button>
+                </div>
+              </div>
+
+              {/* Color Palette Selector */}
+              <ColorPaletteSelector
+                selectedPaletteId={selectedPaletteId}
+                onPaletteChange={setSelectedPaletteId}
+                customPalette={customPalette}
+                onCustomPaletteChange={setCustomPalette}
+              />
             </div>
           </div>
         )}
